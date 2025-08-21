@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 
 class TextBtn extends StatelessWidget {
   const TextBtn(
-      {super.key, this.onTap, required this.text, required this.enable});
+      {super.key,
+      required this.onTap,
+      required this.text,
+      required this.enable});
 
   final VoidCallback? onTap;
   final String text;
@@ -13,18 +16,21 @@ class TextBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
-      child: Container(
+      onTap: enable ? onTap : null,
+      borderRadius: BorderRadius.circular(6),
+      child: Ink(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          color: enable ? MyColor.primary : MyColor.grey100,
+        ),
         width: double.infinity,
         height: 52,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: enable ? MyColor.primary : MyColor.grey100,
-          borderRadius: BorderRadius.circular(6),
+        child: Container(
+          alignment: Alignment.center,
+          child: Text(text,
+              style: MyTypo.button
+                  .copyWith(color: enable ? MyColor.white : MyColor.grey300)),
         ),
-        child: Text(text,
-            style: MyTypo.button
-                .copyWith(color: enable ? MyColor.white : MyColor.grey300)),
       ),
     );
   }

@@ -7,9 +7,9 @@ class MyTheme {
     fontFamily: 'Pretendard',
     primaryColor: MyColor.primary,
     scaffoldBackgroundColor: MyColor.white,
-    splashFactory: InkRipple.splashFactory,
-    splashColor: Colors.transparent,
-    highlightColor: Colors.transparent,
+    // splashFactory: InkRipple.splashFactory,
+    // splashColor: Colors.transparent,
+    // highlightColor: Colors.transparent,
     appBarTheme: const AppBarTheme(
       surfaceTintColor: Colors.transparent,
       systemOverlayStyle: SystemUiOverlayStyle(
