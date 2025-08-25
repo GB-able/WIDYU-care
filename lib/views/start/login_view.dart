@@ -49,11 +49,11 @@ class LoginView extends StatelessWidget {
                         controller: viewModel.pwCtrl,
                         hintText: "비밀번호를 입력해주세요.",
                         validator: viewModel.pwValidator,
-                        obscureText: viewModel.isPwObsecure,
+                        obscureText: viewModel.isPwObscure,
                         suffix: GestureDetector(
                           onTap: viewModel.togglePwObscure,
                           child: SvgPicture.asset(
-                            "assets/icons/ic_20_eye_${viewModel.isPwObsecure ? "on" : "off"}.svg",
+                            "assets/icons/ic_20_eye_${viewModel.isPwObscure ? "off" : "on"}.svg",
                             width: 20,
                             height: 20,
                           ),

@@ -1,3 +1,4 @@
+import 'package:care/utils/validators.dart';
 import 'package:flutter/cupertino.dart';
 
 class LoginViewModel with ChangeNotifier {
@@ -5,7 +6,7 @@ class LoginViewModel with ChangeNotifier {
 
   final _emailCtrl = TextEditingController();
   final _pwCtrl = TextEditingController();
-  bool _isPwObsecure = true;
+  bool _isPwObscure = true;
   bool _isFailed = false;
 
   LoginViewModel() {
@@ -28,7 +29,7 @@ class LoginViewModel with ChangeNotifier {
 
   TextEditingController get emailCtrl => _emailCtrl;
   TextEditingController get pwCtrl => _pwCtrl;
-  bool get isPwObsecure => _isPwObsecure;
+  bool get isPwObscure => _isPwObscure;
 
   String? emailValidator(String? value) {
     if (_isFailed) {
@@ -68,7 +69,7 @@ class LoginViewModel with ChangeNotifier {
   }
 
   void togglePwObscure() {
-    _isPwObsecure = !_isPwObsecure;
+    _isPwObscure = !_isPwObscure;
     notifyListeners();
   }
 }
