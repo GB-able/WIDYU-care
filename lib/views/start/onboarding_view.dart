@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:care/models/constants/route_name.dart';
 import 'package:care/models/enums/social_type.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
@@ -7,6 +8,7 @@ import 'package:care/widgets/text_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 class OnboardingView extends StatefulWidget {
   const OnboardingView({super.key});
@@ -133,7 +135,13 @@ class _OnboardingViewState extends State<OnboardingView> {
                   SocialBtn(type: SocialType.naver, onTap: () {}),
                   SocialBtn(type: SocialType.kakao, onTap: () {}),
                   SocialBtn(type: SocialType.apple, onTap: () {}),
-                  TextBtn(text: "이메일로 시작하기", enable: true, onTap: () {})
+                  TextBtn(
+                    text: "이메일로 시작하기",
+                    enable: true,
+                    onTap: () {
+                      context.push(RouteName.login);
+                    },
+                  )
                 ],
               ),
             )
