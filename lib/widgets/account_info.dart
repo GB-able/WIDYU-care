@@ -1,4 +1,5 @@
 import 'package:care/styles/colors.dart';
+import 'package:care/styles/effects.dart';
 import 'package:care/styles/typos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -37,13 +38,7 @@ class AccountInfo extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: MyColor.white,
-        boxShadow: [
-          BoxShadow(
-            color: MyColor.grey900.withValues(alpha: 0.2),
-            blurRadius: 12,
-            offset: const Offset(1, 1),
-          ),
-        ],
+        boxShadow: [MyEffects.shadow],
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 17.5, vertical: 20),
