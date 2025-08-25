@@ -6,6 +6,7 @@ import 'package:care/views/start/widgets/social_btn.dart';
 import 'package:care/widgets/text_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/services.dart';
 
 class OnboardingView extends StatefulWidget {
   const OnboardingView({super.key});
@@ -22,10 +23,15 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(bottom: 60),
-        child: Column(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        body: Column(
           children: [
             Expanded(
               child: Stack(
@@ -73,10 +79,14 @@ class _OnboardingViewState extends State<OnboardingView> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Expanded(
-                              child: Image.asset(
-                                "assets/images/img_300_onboarding_1.png",
-                                height: double.infinity,
-                                fit: BoxFit.cover,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Image.asset(
+                                  "assets/images/img_300_onboarding_1.png",
+                                  height: double.infinity,
+                                  fit: BoxFit.scaleDown,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 32),
@@ -115,7 +125,8 @@ class _OnboardingViewState extends State<OnboardingView> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.fromLTRB(
+                  16, 0, 16, 16 + MediaQuery.of(context).padding.bottom),
               child: Column(
                 spacing: 8,
                 children: [
