@@ -41,6 +41,20 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   final BorderRadius _radius = BorderRadius.circular(7);
+  bool _forceError = false;
+
+  void _updateErrorState(String? errorText) {
+    final shouldShowError = errorText == "";
+    if (_forceError != shouldShowError) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {
+            _forceError = shouldShowError;
+          });
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +70,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
         TextFormField(
           controller: widget.controller,
           focusNode: widget.focusNode,
-          validator:
-              widget.validator != null ? (val) => widget.validator!(val) : null,
+          validator: (value) {
+            final result = widget.validator!(value);
+            _updateErrorState(result);
+            return result == "" ? null : result;
+          },
           autovalidateMode: AutovalidateMode.onUserInteraction,
           maxLength: widget.maxLength,
           keyboardType: widget.keyboardType,
@@ -88,11 +105,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   ),
             errorStyle: MyTypo.helper.copyWith(color: MyColor.red),
             border: OutlineInputBorder(
-              borderSide: const BorderSide(color: MyColor.grey300, width: 1),
+              borderSide: BorderSide(
+                  color: _forceError ? MyColor.red : MyColor.grey300, width: 1),
               borderRadius: _radius,
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: MyColor.grey300, width: 1),
+              borderSide: BorderSide(
+                  color: _forceError ? MyColor.red : MyColor.grey300, width: 1),
               borderRadius: _radius,
             ),
             disabledBorder: OutlineInputBorder(
@@ -100,7 +119,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
               borderRadius: _radius,
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: MyColor.grey700, width: 1),
+              borderSide: BorderSide(
+                  color: _forceError ? MyColor.red : MyColor.grey700, width: 1),
               borderRadius: _radius,
             ),
             focusedErrorBorder: OutlineInputBorder(
