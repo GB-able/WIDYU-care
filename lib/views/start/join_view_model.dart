@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:care/utils/validators.dart';
 import 'package:flutter/material.dart';
 
 enum JoinStatus {
@@ -65,15 +66,10 @@ class JoinViewModel with ChangeNotifier {
   }
 
   String? emailValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return "이메일을 입력해주세요.";
-    } else if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
-        .hasMatch(value)) {
-      return "이메일 형식이 충족되지 않았어요.";
-    } else if (isDuplicated) {
-      return "중복된 이메일이에요.";
-    }
-    return null;
+    return Validators.chainValidators(value, [
+      Validators.emailValidator,
+      (value) => isDuplicated ? "중복된 이메일이에요." : null,
+    ]);
   }
 
   void setIsCodeSent(bool value) {
