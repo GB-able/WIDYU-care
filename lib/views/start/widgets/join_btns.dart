@@ -1,9 +1,12 @@
+import 'package:care/models/constants/route_name.dart';
+import 'package:care/providers/user_provider.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
 import 'package:care/views/start/join_view_model.dart';
 import 'package:care/widgets/text_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class JoinBtns extends StatelessWidget {
@@ -11,8 +14,8 @@ class JoinBtns extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<JoinViewModel>(
-      builder: (context, viewModel, child) => Container(
+    return Consumer2<UserProvider, JoinViewModel>(
+      builder: (context, userProvider, viewModel, child) => Container(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 60),
         child: switch (viewModel.joinStatus) {
           JoinStatus.identityVerification => viewModel.isCodeSent
@@ -78,7 +81,10 @@ class JoinBtns extends StatelessWidget {
                 ),
                 const SizedBox(height: 18),
                 TextBtn(
-                  onTap: () {},
+                  onTap: () {
+                    userProvider.nextStep();
+                    context.push(RouteName.registerParent);
+                  },
                   text: "계속해서 부모님 계정 생성",
                   enable: true,
                 ),

@@ -9,4 +9,9 @@ class UserProvider extends ChangeNotifier {
     _joinStep++;
     notifyListeners();
   }
+
+  void previousStep() {
+    _joinStep--;
+    notifyListeners();
+  }
 }
