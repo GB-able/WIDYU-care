@@ -1,4 +1,5 @@
 import 'package:care/models/constants/route_name.dart';
+import 'package:care/models/parent.dart';
 import 'package:care/providers/user_provider.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
@@ -78,7 +79,19 @@ class RegisterParentView extends StatelessWidget {
                           const SizedBox(height: 60),
                           TextBtn(
                             onTap: () async {
-                              if (await viewModel.register()) {
+                              final List<Parent> parents = viewModel.accounts
+                                  .map((e) => Parent(
+                                      name: e.nameCtrl.text,
+                                      inviteCode: e.inviteCodeCtrl.text,
+                                      phone: e.phoneNumberCtrl.text,
+                                      address: e.addressCtrl.text +
+                                          (e.detailAddressCtrl.text.isNotEmpty
+                                              ? " ${e.detailAddressCtrl.text}"
+                                              : ""),
+                                      birthDate: e.birthDateCtrl.text))
+                                  .toList();
+                              if (await viewModel.register(
+                                  () => userProvider.setParents(parents))) {
                                 // [TODO] 부모님 생성 실패 로직 넣기
                                 if (context.mounted) {
                                   userProvider.nextStep();

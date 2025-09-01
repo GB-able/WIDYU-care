@@ -76,7 +76,8 @@ class RegisterParentViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> register() async {
+  Future<bool> register(VoidCallback callback) async {
+    callback();
     return true;
   } // [TODO] 부모님 생성 로직 넣기
 }

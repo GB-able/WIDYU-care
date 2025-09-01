@@ -1,4 +1,5 @@
 import 'package:care/models/constants/route_name.dart';
+import 'package:care/models/user.dart';
 import 'package:care/providers/user_provider.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
@@ -65,7 +66,13 @@ class JoinBtns extends StatelessWidget {
                 )
               : const SizedBox.shrink(),
           JoinStatus.emailPassword => TextBtn(
-              onTap: viewModel.join,
+              onTap: () {
+                final user = User(
+                    name: viewModel.nameCtrl.text,
+                    email: viewModel.emailCtrl.text,
+                    phone: viewModel.phoneCtrl.text);
+                viewModel.join(() => userProvider.setUser(user));
+              },
               text: "회원가입하기",
               enable: viewModel.emailCtrl.text.isNotEmpty &&
                   viewModel.pwCtrl.text.isNotEmpty &&

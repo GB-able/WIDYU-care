@@ -15,14 +15,28 @@ class StartProgressBar extends StatelessWidget {
         totalSteps: 3,
         currentStep: userProvider.joinStep,
         padding: const EdgeInsets.fromLTRB(34, 6, 34, 0),
-        stepSize: 19,
+        stepSize: 23,
         nodeTitles: const ["케어러 정보", "부모님 정보", "완료"],
         nodeIconBuilder: (index, completedStepIndex) {
           if (index < completedStepIndex) {
             return Container(
               width: 15,
               height: 15,
-              margin: const EdgeInsets.all(2),
+              margin: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                color: MyColor.primary,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.check,
+                size: 11,
+                color: MyColor.white,
+              ),
+            );
+          } else if (index == 2 && completedStepIndex == 2) {
+            return Container(
+              width: 23,
+              height: 23,
               decoration: const BoxDecoration(
                 color: MyColor.primary,
                 shape: BoxShape.circle,
@@ -37,6 +51,7 @@ class StartProgressBar extends StatelessWidget {
             return Container(
               width: 19,
               height: 19,
+              margin: const EdgeInsets.all(2),
               padding: const EdgeInsets.all(5),
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
@@ -60,20 +75,12 @@ class StartProgressBar extends StatelessWidget {
             );
           } else {
             return Container(
-              width: 19,
-              height: 19,
-              margin: const EdgeInsets.all(5),
+              width: 9,
+              height: 9,
+              margin: const EdgeInsets.all(7),
               decoration: const BoxDecoration(
-                color: Colors.transparent,
+                color: MyColor.grey300,
                 shape: BoxShape.circle,
-              ),
-              child: Container(
-                width: 9,
-                height: 9,
-                decoration: const BoxDecoration(
-                  color: MyColor.grey300,
-                  shape: BoxShape.circle,
-                ),
               ),
             );
           }

@@ -113,11 +113,12 @@ class JoinViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void join() {
+  void join(VoidCallback callback) {
     // [TODO] 회원가입 로직 넣기
     if (emailCtrl.text.isEmpty || pwCtrl.text.isEmpty || isDuplicated) {
       return;
     }
+    callback();
     setJoinStatus(JoinStatus.welcomeInvite);
   }
 
