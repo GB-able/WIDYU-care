@@ -1,3 +1,4 @@
+import 'package:care/utils/validators.dart';
 import 'package:flutter/cupertino.dart';
 
 class LoginViewModel with ChangeNotifier {
@@ -5,7 +6,7 @@ class LoginViewModel with ChangeNotifier {
 
   final _emailCtrl = TextEditingController();
   final _pwCtrl = TextEditingController();
-  bool _isPwObsecure = true;
+  bool _isPwObscure = true;
   bool _isFailed = false;
 
   LoginViewModel() {
@@ -28,23 +29,18 @@ class LoginViewModel with ChangeNotifier {
 
   TextEditingController get emailCtrl => _emailCtrl;
   TextEditingController get pwCtrl => _pwCtrl;
-  bool get isPwObsecure => _isPwObsecure;
+  bool get isPwObscure => _isPwObscure;
 
   String? emailValidator(String? value) {
-    if (_isFailed) {
-      return "이메일 또는 비밀번호가 일치하지 않습니다.";
-    } else if (value == null || value.isEmpty) {
-      return '이메일을 입력해주세요.';
-    } else if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
-        .hasMatch(value)) {
-      return '올바른 이메일 형식이 아닙니다.';
-    }
-    return null;
+    return Validators.chainValidators(value, [
+      (value) => _isFailed ? "" : null,
+      Validators.emailValidator,
+    ]);
   }
 
   String? pwValidator(String? value) {
     if (_isFailed) {
-      return "이메일 또는 비밀번호가 일치하지 않습니다.";
+      return "이메일 또는 비밀번호가 일치하지 않아요.";
     } else if (value == null || value.isEmpty) {
       return '비밀번호를 입력해주세요.';
     }
@@ -68,7 +64,7 @@ class LoginViewModel with ChangeNotifier {
   }
 
   void togglePwObscure() {
-    _isPwObsecure = !_isPwObsecure;
+    _isPwObscure = !_isPwObscure;
     notifyListeners();
   }
 }

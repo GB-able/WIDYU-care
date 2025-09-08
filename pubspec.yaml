@@ -21,6 +21,10 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   flutter_dotenv: ^6.0.0
   flutter_naver_login: ^2.1.1
+  step_progress: ^2.6.1
+  daum_postcode_search: ^0.0.4
+  flutter_inappwebview: ^6.1.5
+  collection: ^1.19.1
 
 dev_dependencies:
   flutter_test:

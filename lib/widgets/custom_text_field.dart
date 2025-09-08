@@ -12,6 +12,7 @@ class CustomTextField extends StatefulWidget {
     this.focusNode,
     this.maxLength,
     this.suffix,
+    this.title,
     this.keyboardType = TextInputType.text,
     this.inputFormatters = const [],
     this.maxLines = 1,
@@ -29,6 +30,7 @@ class CustomTextField extends StatefulWidget {
   final List<TextInputFormatter> inputFormatters;
   final int maxLines;
   final Widget? suffix;
+  final String? title;
   final bool obscureText;
   final TextInputAction inputAction;
   final bool enabled;
@@ -39,60 +41,103 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   final BorderRadius _radius = BorderRadius.circular(7);
+  bool _forceError = false;
+
+  void _updateErrorState(String? errorText) {
+    final shouldShowError = errorText == "";
+    if (_forceError != shouldShowError) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {
+            _forceError = shouldShowError;
+          });
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: widget.controller,
-      validator:
-          widget.validator != null ? (val) => widget.validator!(val) : null,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      maxLength: widget.maxLength,
-      keyboardType: widget.keyboardType,
-      inputFormatters: widget.inputFormatters,
-      maxLines: widget.maxLines,
-      obscureText: widget.obscureText,
-      textInputAction: widget.inputAction,
-      decoration: InputDecoration(
-        hintText: widget.hintText,
-        hintStyle: MyTypo.hint.copyWith(color: MyColor.grey300),
-        counterText: "",
-        contentPadding: const EdgeInsets.symmetric(vertical: 16),
-        prefix: const SizedBox(width: 15),
-        suffixIcon: widget.suffix == null
-            ? const SizedBox(width: 15)
-            : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: widget.suffix,
-              ),
-        errorStyle: MyTypo.helper.copyWith(color: MyColor.red),
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(color: MyColor.grey300, width: 1),
-          borderRadius: _radius,
+    return Column(
+      spacing: 4,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.title != null)
+          Text(
+            widget.title!,
+            style: MyTypo.subTitle2.copyWith(color: MyColor.grey700),
+          ),
+        TextFormField(
+          controller: widget.controller,
+          focusNode: widget.focusNode,
+          validator: (value) {
+            final result = widget.validator!(value);
+            _updateErrorState(result);
+            return result == "" ? null : result;
+          },
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          maxLength: widget.maxLength,
+          keyboardType: widget.keyboardType,
+          inputFormatters: widget.inputFormatters,
+          maxLines: widget.maxLines,
+          obscureText: widget.obscureText,
+          textInputAction: widget.inputAction,
+          decoration: InputDecoration(
+            hintText: widget.hintText,
+            hintStyle: MyTypo.hint.copyWith(color: MyColor.grey300),
+            counterText: "",
+            contentPadding: const EdgeInsets.symmetric(vertical: 15),
+            prefix: const SizedBox(width: 15),
+            suffix: widget.suffix == null
+                ? const SizedBox(width: 15)
+                : const SizedBox(width: 8),
+            suffixIcon: widget.suffix == null
+                ? null
+                : Padding(
+                    padding: const EdgeInsets.only(right: 15),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        widget.suffix!,
+                      ],
+                    ),
+                  ),
+            errorStyle: MyTypo.helper.copyWith(color: MyColor.red),
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: _forceError ? MyColor.red : MyColor.grey300, width: 1),
+              borderRadius: _radius,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: _forceError ? MyColor.red : MyColor.grey300, width: 1),
+              borderRadius: _radius,
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: MyColor.grey300, width: 1),
+              borderRadius: _radius,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: _forceError ? MyColor.red : MyColor.grey700, width: 1),
+              borderRadius: _radius,
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: MyColor.red, width: 1),
+              borderRadius: _radius,
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: MyColor.red, width: 1),
+              borderRadius: _radius,
+            ),
+          ),
+          style: MyTypo.hint.copyWith(
+              color: widget.enabled ? MyColor.grey900 : MyColor.grey300),
+          cursorColor: MyColor.grey900,
+          enabled: widget.enabled,
         ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: MyColor.grey300, width: 1),
-          borderRadius: _radius,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: MyColor.grey300, width: 1),
-          borderRadius: _radius,
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: MyColor.red, width: 1),
-          borderRadius: _radius,
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: MyColor.red, width: 1),
-          borderRadius: _radius,
-        ),
-        filled: true,
-        fillColor: widget.enabled ? Colors.transparent : MyColor.grey300,
-      ),
-      style: MyTypo.hint
-          .copyWith(color: widget.enabled ? MyColor.grey700 : MyColor.grey900),
-      cursorColor: MyColor.grey900,
-      enabled: widget.enabled,
+      ],
     );
   }
 }

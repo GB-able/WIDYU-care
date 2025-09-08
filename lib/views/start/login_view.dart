@@ -1,3 +1,4 @@
+import 'package:care/models/constants/route_name.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
 import 'package:care/views/start/login_view_model.dart';
@@ -6,6 +7,7 @@ import 'package:care/widgets/custom_text_field.dart';
 import 'package:care/widgets/text_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class LoginView extends StatelessWidget {
@@ -47,11 +49,11 @@ class LoginView extends StatelessWidget {
                         controller: viewModel.pwCtrl,
                         hintText: "비밀번호를 입력해주세요.",
                         validator: viewModel.pwValidator,
-                        obscureText: viewModel.isPwObsecure,
+                        obscureText: viewModel.isPwObscure,
                         suffix: GestureDetector(
                           onTap: viewModel.togglePwObscure,
                           child: SvgPicture.asset(
-                            "assets/icons/ic_20_eye_${viewModel.isPwObsecure ? "on" : "off"}.svg",
+                            "assets/icons/ic_20_eye_${viewModel.isPwObscure ? "off" : "on"}.svg",
                             width: 20,
                             height: 20,
                           ),
@@ -74,7 +76,9 @@ class LoginView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              context.push(RouteName.join);
+                            },
                             child: Text(
                               "회원가입",
                               style: MyTypo.button
