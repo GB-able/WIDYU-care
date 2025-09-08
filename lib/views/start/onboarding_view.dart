@@ -3,6 +3,7 @@ import 'package:care/models/constants/route_name.dart';
 import 'package:care/models/enums/social_type.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
+import 'package:care/utils/social_login.dart';
 import 'package:care/views/start/widgets/social_btn.dart';
 import 'package:care/widgets/text_btn.dart';
 import 'package:flutter/material.dart';
@@ -132,9 +133,24 @@ class _OnboardingViewState extends State<OnboardingView> {
               child: Column(
                 spacing: 8,
                 children: [
-                  SocialBtn(type: SocialType.naver, onTap: () {}),
-                  SocialBtn(type: SocialType.kakao, onTap: () {}),
-                  SocialBtn(type: SocialType.apple, onTap: () {}),
+                  SocialBtn(
+                      type: SocialType.naver,
+                      onTap: () async {
+                        final naver = NaverSocialLogin();
+                        await naver.login();
+                      }),
+                  SocialBtn(
+                      type: SocialType.kakao,
+                      onTap: () async {
+                        final kakao = KakaoSocialLogin();
+                        await kakao.login();
+                      }),
+                  SocialBtn(
+                      type: SocialType.apple,
+                      onTap: () async {
+                        final apple = AppleSocialLogin();
+                        await apple.login();
+                      }),
                   TextBtn(
                     text: "이메일로 시작하기",
                     enable: true,

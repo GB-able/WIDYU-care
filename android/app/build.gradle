@@ -5,8 +5,37 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { localProperties.load(it) }
+} else {
+    throw FileNotFoundException("local.properties not found")
+}
+
+def kakaoNativeKey = localProperties.getProperty('kakao.native.key')
+if (kakaoNativeKey == null) {
+    throw GradleException("kakao.native.key not found")
+}
+
+def appleClientId = localProperties.getProperty('apple.client.id')
+if (appleClientId == null) {
+    throw GradleException("apple.client.id not found")
+}
+
+def naverClientId = localProperties.getProperty('naver.client.id')
+if (naverClientId == null) {
+    throw GradleException("naver.client.id not found")
+}
+
+def naverClientSecret = localProperties.getProperty('naver.client.secret')
+if (naverClientSecret == null) {
+    throw GradleException("naver.client.secret not found")
+}
+
 android {
-    namespace = "com.example.care"
+    namespace = "com.gbable.care"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,13 +50,20 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.care"
+        applicationId = "com.gbable.care"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders = [
+            'applicationName': 'io.flutter.app.FlutterApplication',
+            kakaoNativeKey: kakaoNativeKey,
+            appleClientId: appleClientId,
+            naverClientId: naverClientId,
+            naverClientSecret: naverClientSecret,
+        ]
     }
 
     buildTypes {
