@@ -15,6 +15,7 @@ class AuthService {
         "provider": provider.name,
       },
       body: body,
+      tokenType: TokenType.none,
     );
 
     if (res.statusCode == 200 || res.statusCode == 201) {

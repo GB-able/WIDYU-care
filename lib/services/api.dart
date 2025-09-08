@@ -5,6 +5,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 enum HttpMethod { get, post, put, patch, delete }
 
+enum TokenType { none, access, temporary }
+
 class API {
   static final API _instance = API._internal();
   factory API() => _instance;
@@ -25,19 +27,27 @@ class API {
     Map<String, dynamic>? query,
     Object? body,
     int version = 1,
+    TokenType tokenType = TokenType.none,
   }) {
     path = '/v$version$path';
+    final options = Options(
+      extra: {'tokenType': tokenType},
+    );
+
     switch (method) {
       case HttpMethod.get:
-        return dio.get(path, queryParameters: query);
+        return dio.get(path, queryParameters: query, options: options);
       case HttpMethod.post:
-        return dio.post(path, queryParameters: query, data: body);
+        return dio.post(path,
+            queryParameters: query, data: body, options: options);
       case HttpMethod.put:
-        return dio.put(path, queryParameters: query, data: body);
+        return dio.put(path,
+            queryParameters: query, data: body, options: options);
       case HttpMethod.patch:
-        return dio.patch(path, queryParameters: query, data: body);
+        return dio.patch(path,
+            queryParameters: query, data: body, options: options);
       case HttpMethod.delete:
-        return dio.delete(path, queryParameters: query, data: body);
+        return dio.delete(path, queryParameters: query, options: options);
     }
   }
 
@@ -58,10 +68,24 @@ class CustomInterceptor extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    final token = await storage.read(key: StorageKey.accessToken.name);
+    final tokenType = options.extra['tokenType'] as TokenType;
+    String? token;
+
+    switch (tokenType) {
+      case TokenType.none:
+        break;
+      case TokenType.access:
+        token = await storage.read(key: StorageKey.accessToken.name);
+        break;
+      case TokenType.temporary:
+        token = await storage.read(key: StorageKey.tempToken.name);
+        break;
+    }
+
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
     }
+
     handler.next(options);
   }
 
@@ -73,35 +97,39 @@ class CustomInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401) {
-      try {
-        final refreshToken =
-            await storage.read(key: StorageKey.refreshToken.name);
-        if (refreshToken != null) {
-          final response = await Dio().post(
-            '$baseUrl/auth/refresh',
-            data: {
-              'refreshToken': refreshToken,
-            },
-          );
+      final tokenType = err.requestOptions.extra['tokenType'] as TokenType;
 
-          if (response.statusCode == 200) {
-            final newAccessToken = response.data['data']['accessToken'];
-            final newRefreshToken = response.data['data']['refreshToken'];
+      if (tokenType == TokenType.access) {
+        try {
+          final refreshToken =
+              await storage.read(key: StorageKey.refreshToken.name);
+          if (refreshToken != null) {
+            final response = await Dio().post(
+              '$baseUrl/auth/refresh',
+              data: {
+                'refreshToken': refreshToken,
+              },
+            );
 
-            await storage.write(
-                key: StorageKey.accessToken.name, value: newAccessToken);
-            await storage.write(
-                key: StorageKey.refreshToken.name, value: newRefreshToken);
+            if (response.statusCode == 200) {
+              final newAccessToken = response.data['data']['accessToken'];
+              final newRefreshToken = response.data['data']['refreshToken'];
 
-            err.requestOptions.headers['Authorization'] =
-                'Bearer $newAccessToken';
-            final retryResponse = await Dio().fetch(err.requestOptions);
-            handler.resolve(retryResponse);
-            return;
+              await storage.write(
+                  key: StorageKey.accessToken.name, value: newAccessToken);
+              await storage.write(
+                  key: StorageKey.refreshToken.name, value: newRefreshToken);
+
+              err.requestOptions.headers['Authorization'] =
+                  'Bearer $newAccessToken';
+              final retryResponse = await Dio().fetch(err.requestOptions);
+              handler.resolve(retryResponse);
+              return;
+            }
           }
+        } catch (e) {
+          await storage.deleteAll();
         }
-      } catch (e) {
-        await storage.deleteAll();
       }
     }
 
