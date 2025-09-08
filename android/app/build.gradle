@@ -5,8 +5,22 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { localProperties.load(it) }
+} else {
+    throw FileNotFoundException("local.properties not found")
+}
+
+def kakaoNativeKey = localProperties.getProperty('kakao.native.key')
+if (kakaoNativeKey == null) {
+    throw GradleException("kakao.native.key not found")
+}
+
 android {
-    namespace = "com.example.care"
+    namespace = "com.gbable.care"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
