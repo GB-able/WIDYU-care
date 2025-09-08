@@ -5,6 +5,9 @@ class RouteName {
   static const String registerParent = "/register-parent";
   static const String welcome = "/welcome";
 
+  static const String findEmail = "/find-email";
+  static const String findPassword = "/find-password";
+
   static const String home = "/home";
 
   static const String searchAddress = "/search-address";

@@ -1,46 +1,35 @@
 import 'dart:async';
-
-import 'package:care/utils/validators.dart';
 import 'package:flutter/material.dart';
 
-enum JoinStatus {
-  emailPassword,
-  identityVerification,
-  welcomeInvite,
+enum FindEmailStatus {
+  identity,
+  success,
+  fail,
 }
 
-class JoinViewModel with ChangeNotifier {
+class FindEmailViewModel with ChangeNotifier {
+  FindEmailStatus _findStatus = FindEmailStatus.identity;
+
   final _nameCtrl = TextEditingController();
   final _phoneCtrl = TextEditingController();
   final _codeCtrl = TextEditingController();
-  final _emailCtrl = TextEditingController();
-  final _pwCtrl = TextEditingController();
   final _codeFocus = FocusNode();
   bool _isCodeSent = false;
   bool _isCodeVerified = false;
   bool _isCodeFailed = false;
   Timer? _timer;
-  bool _isAgreed = false;
-  bool _isDuplicated = false;
-  bool _isChecked = false;
-  JoinStatus _joinStatus = JoinStatus.identityVerification;
+  String? _email;
 
-  JoinViewModel() {
+  FindEmailViewModel() {
     _nameCtrl.addListener(() => notifyListeners());
     _phoneCtrl.addListener(() => notifyListeners());
     _codeCtrl.addListener(() {
       _isCodeFailed = false;
       notifyListeners();
     });
-    _emailCtrl.addListener(() {
-      _isChecked = false;
-      _isDuplicated = false;
-      notifyListeners();
-    });
-    _pwCtrl.addListener(() => notifyListeners());
   }
 
-  /* [NOTICE] JoinStatus.identityVerification */
+  FindEmailStatus get findStatus => _findStatus;
   TextEditingController get nameCtrl => _nameCtrl;
   TextEditingController get phoneCtrl => _phoneCtrl;
   TextEditingController get codeCtrl => _codeCtrl;
@@ -50,26 +39,13 @@ class JoinViewModel with ChangeNotifier {
   bool get isCodeFailed => _isCodeFailed;
   bool get canSend => _phoneCtrl.text.length == 13 && !isCodeVerified;
   Timer? get timer => _timer;
-  bool get isAgreed => _isAgreed;
-  /* [NOTICE] JoinStatus.emailPassword */
-  TextEditingController get emailCtrl => _emailCtrl;
-  TextEditingController get pwCtrl => _pwCtrl;
-  bool get isDuplicated => _isDuplicated;
-  bool get isChecked => _isChecked;
-  JoinStatus get joinStatus => _joinStatus;
+  String? get email => _email;
 
   String? codeValidator(String? value) {
     if (_isCodeFailed) {
       return "인증번호가 일치하지 않아요.";
     }
     return null;
-  }
-
-  String? emailValidator(String? value) {
-    return Validators.chainValidators(value, [
-      Validators.emailValidator,
-      (value) => isDuplicated ? "중복된 이메일이에요." : null,
-    ]);
   }
 
   void setIsCodeSent(bool value) {
@@ -86,6 +62,7 @@ class JoinViewModel with ChangeNotifier {
     }
     _isCodeSent = true;
     _timer = Timer.periodic(const Duration(minutes: 5), (timer) {});
+    _codeCtrl.clear();
     notifyListeners();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -106,29 +83,18 @@ class JoinViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void checkDuplicated() {
-    // [TODO] 중복 이메일 확인 로직 넣기
-    _isDuplicated = false;
-    _isChecked = true;
-    notifyListeners();
+  void find() {
+    // [TODO] 실제 이메일 찾기 로직 넣기
+    // _email = "example@widyu.com";
   }
 
-  void join(VoidCallback callback) {
-    // [TODO] 회원가입 로직 넣기
-    if (emailCtrl.text.isEmpty || pwCtrl.text.isEmpty || isDuplicated) {
-      return;
+  void setFindStatus(FindEmailStatus status) {
+    if (status == FindEmailStatus.fail) {
+      _isCodeSent = false;
+      _isCodeVerified = false;
+      _codeCtrl.clear();
     }
-    callback();
-    setJoinStatus(JoinStatus.welcomeInvite);
-  }
-
-  void toggleAgree() {
-    _isAgreed = !_isAgreed;
-    notifyListeners();
-  }
-
-  void setJoinStatus(JoinStatus status) {
-    _joinStatus = status;
+    _findStatus = status;
     notifyListeners();
   }
 
@@ -137,8 +103,6 @@ class JoinViewModel with ChangeNotifier {
     _nameCtrl.dispose();
     _phoneCtrl.dispose();
     _codeCtrl.dispose();
-    _emailCtrl.dispose();
-    _pwCtrl.dispose();
     _codeFocus.dispose();
     _timer?.cancel();
     super.dispose();

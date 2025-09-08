@@ -89,7 +89,9 @@ class LoginView extends StatelessWidget {
                             spacing: 16,
                             children: [
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  context.push(RouteName.findEmail);
+                                },
                                 child: Text(
                                   "이메일 찾기",
                                   style: MyTypo.button
@@ -102,7 +104,9 @@ class LoginView extends StatelessWidget {
                                 color: MyColor.grey700,
                               ),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  context.push(RouteName.findPassword);
+                                },
                                 child: Text(
                                   "비밀번호 찾기",
                                   style: MyTypo.button
