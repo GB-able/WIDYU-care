@@ -1,6 +1,6 @@
 class Profile {
   final String name;
-  final String phoneNumber;
+  final String? phoneNumber;
   final String email;
   final List<String> providers;
 
@@ -15,7 +15,7 @@ class Profile {
       email: json['email'],
       name: json['name'],
       phoneNumber: json['phoneNumber'],
-      providers: json['providers'],
+      providers: json['providers'].cast<String>(),
     );
   }
 }

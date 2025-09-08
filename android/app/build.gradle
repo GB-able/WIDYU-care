@@ -19,6 +19,21 @@ if (kakaoNativeKey == null) {
     throw GradleException("kakao.native.key not found")
 }
 
+def appleClientId = localProperties.getProperty('apple.client.id')
+if (appleClientId == null) {
+    throw GradleException("apple.client.id not found")
+}
+
+def naverClientId = localProperties.getProperty('naver.client.id')
+if (naverClientId == null) {
+    throw GradleException("naver.client.id not found")
+}
+
+def naverClientSecret = localProperties.getProperty('naver.client.secret')
+if (naverClientSecret == null) {
+    throw GradleException("naver.client.secret not found")
+}
+
 android {
     namespace = "com.gbable.care"
     compileSdk = flutter.compileSdkVersion
@@ -45,6 +60,9 @@ android {
         manifestPlaceholders = [
             'applicationName': 'io.flutter.app.FlutterApplication',
             kakaoNativeKey: kakaoNativeKey,
+            appleClientId: appleClientId,
+            naverClientId: naverClientId,
+            naverClientSecret: naverClientSecret,
         ]
     }
 

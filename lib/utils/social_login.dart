@@ -74,6 +74,59 @@ class KakaoSocialLogin extends SocialLogin {
   }
 }
 
+class AppleSocialLogin extends SocialLogin {
+  final storage = const FlutterSecureStorage();
+
+  @override
+  Future<SocialLoginDto?> login() async {
+    try {
+      final AuthorizationCredentialAppleID credential =
+          await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        webAuthenticationOptions: WebAuthenticationOptions(
+          clientId: dotenv.env['APPLE_CLIENT_ID']!,
+          redirectUri: Uri.parse(dotenv.env['APPLE_CALLBACK_URL']!),
+        ),
+      );
+
+      String? email = credential.email;
+      String? name =
+          (credential.familyName == null || credential.givenName == null)
+              ? null
+              : credential.familyName! + credential.givenName!;
+
+      if (email == null || name == null) {
+        email = await storage.read(key: StorageKey.tempAppleEmail.name);
+        name = await storage.read(key: StorageKey.tempAppleName.name);
+      } else {
+        await Future.wait([
+          storage.write(key: StorageKey.tempAppleEmail.name, value: email),
+          storage.write(key: StorageKey.tempAppleName.name, value: name),
+        ]);
+      }
+
+      return await authService.appleLogin(
+          credential.authorizationCode, email, name);
+    } catch (e) {
+      print('[PRINT] 애플 로그인 실패: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<String?> logout() async {
+    return null;
+  }
+
+  @override
+  Future<String?> withdraw() async {
+    return null;
+  }
+}
+
 abstract class SocialLogin {
   final authService = AuthService();
 

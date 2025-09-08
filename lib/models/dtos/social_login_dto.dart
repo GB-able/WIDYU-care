@@ -20,8 +20,11 @@ class SocialLoginDto {
       isFirst: json['isFirst'],
       accessToken: json['accessToken'],
       refreshToken: json['refreshToken'],
-      profile: Profile.fromJson(json['profile']),
-      newProfile: NewProfile.fromJson(json['newSocialAccountInfo']),
+      profile:
+          json['profile'] != null ? Profile.fromJson(json['profile']) : null,
+      newProfile: json['newSocialAccountInfo'] != null
+          ? NewProfile.fromJson(json['newSocialAccountInfo'])
+          : null,
     );
   }
 }

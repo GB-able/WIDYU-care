@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: '위듀 케어',
       theme: MyTheme.myTheme,
-      home: const Home(),
+      home: const OnboardingView(),
     );
   }
 }

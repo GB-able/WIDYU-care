@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:care/models/enums/social_type.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
+import 'package:care/utils/social_login.dart';
 import 'package:care/views/start/widgets/social_btn.dart';
 import 'package:care/widgets/text_btn.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,8 @@ class _OnboardingViewState extends State<OnboardingView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.only(bottom: 60),
+        padding:
+            EdgeInsets.only(bottom: 60 + MediaQuery.of(context).padding.bottom),
         child: Column(
           children: [
             Expanded(
@@ -73,10 +75,14 @@ class _OnboardingViewState extends State<OnboardingView> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Expanded(
-                              child: Image.asset(
-                                "assets/images/img_300_onboarding_1.png",
-                                height: double.infinity,
-                                fit: BoxFit.cover,
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 36),
+                                child: Image.asset(
+                                  "assets/images/img_300_onboarding_1.png",
+                                  height: double.infinity,
+                                  fit: BoxFit.scaleDown,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 32),
@@ -119,9 +125,24 @@ class _OnboardingViewState extends State<OnboardingView> {
               child: Column(
                 spacing: 8,
                 children: [
-                  SocialBtn(type: SocialType.naver, onTap: () {}),
-                  SocialBtn(type: SocialType.kakao, onTap: () {}),
-                  SocialBtn(type: SocialType.apple, onTap: () {}),
+                  SocialBtn(
+                      type: SocialType.naver,
+                      onTap: () async {
+                        final naver = NaverSocialLogin();
+                        await naver.login();
+                      }),
+                  SocialBtn(
+                      type: SocialType.kakao,
+                      onTap: () async {
+                        final kakao = KakaoSocialLogin();
+                        await kakao.login();
+                      }),
+                  SocialBtn(
+                      type: SocialType.apple,
+                      onTap: () async {
+                        final apple = AppleSocialLogin();
+                        await apple.login();
+                      }),
                   TextBtn(text: "이메일로 시작하기", enable: true, onTap: () {})
                 ],
               ),
