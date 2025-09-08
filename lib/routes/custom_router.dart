@@ -1,6 +1,7 @@
 import 'package:care/models/constants/route_name.dart';
 import 'package:care/routes/custom_page.dart';
 import 'package:care/views/find/find_email_view.dart';
+import 'package:care/views/find/find_password_view.dart';
 import 'package:care/views/start/join_view.dart';
 import 'package:care/views/start/login_view.dart';
 import 'package:care/views/start/onboarding_view.dart';
@@ -46,6 +47,10 @@ class CustomRouter {
       CustomGoRoute.slideRoute(
         path: RouteName.findEmail,
         builder: (context, state) => const FindEmailView(),
+      ),
+      CustomGoRoute.slideRoute(
+        path: RouteName.findPassword,
+        builder: (context, state) => const FindPasswordView(),
       ),
     ],
   );

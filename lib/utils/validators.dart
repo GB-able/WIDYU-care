@@ -36,6 +36,17 @@ class Validators {
     return null;
   }
 
+  static String? pwValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return "비밀번호를 입력해주세요.";
+    } else if (!RegExp(
+            r'^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,12}$')
+        .hasMatch(value)) {
+      return "비밀번호는 영문, 숫자, 특수기호를 조합해 8자~12자로 입력해주세요.";
+    }
+    return null;
+  }
+
   static String? emptyValidator(String? value, {String data = "값을"}) {
     if (value == null || value.isEmpty) {
       return "$data 입력해주세요.";
