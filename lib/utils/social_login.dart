@@ -9,6 +9,40 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+
+class NaverSocialLogin extends SocialLogin {
+  @override
+  Future<SocialLoginDto?> login() async {
+    try {
+      final res = await FlutterNaverLogin.logIn();
+      if (res.status == NaverLoginStatus.loggedIn) {
+        final NaverToken token =
+            await FlutterNaverLogin.getCurrentAccessToken();
+        if (token.isValid()) {
+          return await authService.naverLogin(
+              token.accessToken, token.refreshToken);
+        } else {
+          throw Exception('Naver token is invalid');
+        }
+      } else {
+        throw Exception('Naver login failed');
+      }
+    } catch (error) {
+      return null;
+    }
+  }
+
+  @override
+  Future<void> logout() {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> withdraw() {
+    throw UnimplementedError();
+  }
+}
+
 class KakaoSocialLogin extends SocialLogin {
   @override
   Future<SocialLoginDto?> login() async {

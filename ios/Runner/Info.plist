@@ -53,12 +53,23 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>kakao${KAKAO_NATIVE_KEY}</string> <!-- 카카오 로그인 -->
+				<string>${NAVER_URL_SCHEME}</string> <!-- 네이버 로그인 -->
 			</array>
 		</dict>
 	</array>
 	<key>LSApplicationQueriesSchemes</key>
   <array>
       <string>kakaokompassauth</string> <!-- 카카오 로그인 -->
+			<string>naversearchapp</string> <!-- 네이버 로그인 -->
+    	<string>naversearchthirdlogin</string> <!-- 네이버 로그인 -->
   </array>
+	<key>NidUrlScheme</key>
+	<string>${NAVER_URL_SCHEME}</string>
+	<key>NidClientID</key>
+	<string>${NAVER_CLIENT_ID}</string>
+	<key>NidClientSecret</key>
+	<string>${NAVER_CLIENT_SECRET}</string>
+	<key>NidAppName</key>
+	<string>위듀 케어</string>
 </dict>
 </plist>
