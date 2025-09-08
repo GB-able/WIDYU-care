@@ -2,14 +2,10 @@ import 'package:care/providers/user_provider.dart';
 import 'package:care/routes/custom_router.dart';
 import 'package:care/styles/theme.dart';
 import 'package:care/styles/typos.dart';
-import 'package:care/views/start/onboarding_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
-import 'package:care/views/start/join_view.dart';
-import 'package:care/views/start/login_view.dart';
-import 'package:care/views/start/onboarding_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
