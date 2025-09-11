@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:care/providers/user_provider.dart';
 import 'package:care/utils/validators.dart';
 import 'package:flutter/material.dart';
 
@@ -23,9 +24,10 @@ class JoinViewModel with ChangeNotifier {
   bool _isAgreed = false;
   bool _isDuplicated = false;
   bool _isChecked = false;
-  JoinStatus _joinStatus = JoinStatus.identityVerification;
+  late JoinStatus _joinStatus;
 
-  JoinViewModel() {
+  JoinViewModel({JoinStatus initJoinStatus = JoinStatus.identityVerification}) {
+    _joinStatus = initJoinStatus;
     _nameCtrl.addListener(() => notifyListeners());
     _phoneCtrl.addListener(() => notifyListeners());
     _codeCtrl.addListener(() {

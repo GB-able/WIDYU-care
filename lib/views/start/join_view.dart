@@ -1,3 +1,4 @@
+import 'package:care/providers/user_provider.dart';
 import 'package:care/views/start/join_view_model.dart';
 import 'package:care/views/start/widgets/join_btns.dart';
 import 'package:care/views/start/widgets/join_welcome_invite.dart';
@@ -9,12 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class JoinView extends StatelessWidget {
-  const JoinView({super.key});
+  const JoinView({super.key, required this.initJoinStatus});
+
+  final JoinStatus initJoinStatus;
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => JoinViewModel(),
+      create: (_) => JoinViewModel(initJoinStatus: initJoinStatus),
       child: Consumer<JoinViewModel>(
         builder: (context, viewModel, _) => Scaffold(
           appBar: CustomAppBar(

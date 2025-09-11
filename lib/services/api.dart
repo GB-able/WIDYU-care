@@ -17,7 +17,7 @@ class API {
 
   API._internal() {
     dio.options = BaseOptions(baseUrl: baseUrl);
-    dio.interceptors.add(CustomInterceptor(storage, baseUrl));
+    dio.interceptors.add(CustomInterceptor(storage, baseUrl, dio));
     dio.interceptors.add(LoggerInterceptor());
   }
 
@@ -27,7 +27,7 @@ class API {
     Map<String, dynamic>? query,
     Object? body,
     int version = 1,
-    TokenType tokenType = TokenType.none,
+    TokenType tokenType = TokenType.access,
   }) {
     path = '/v$version$path';
     final options = Options(
@@ -51,10 +51,23 @@ class API {
     }
   }
 
+  Future<bool> hasToken() async {
+    final accessToken = await storage.read(key: StorageKey.accessToken.name);
+    final refreshToken = await storage.read(key: StorageKey.refreshToken.name);
+    return accessToken != null && refreshToken != null;
+  }
+
   Future<void> setToken(String accessToken, String refreshToken) async {
     await Future.wait([
       storage.write(key: StorageKey.accessToken.name, value: accessToken),
       storage.write(key: StorageKey.refreshToken.name, value: refreshToken),
+    ]);
+  }
+
+  Future<void> removeToken() async {
+    await Future.wait([
+      storage.delete(key: StorageKey.accessToken.name),
+      storage.delete(key: StorageKey.refreshToken.name),
     ]);
   }
 }
@@ -62,8 +75,9 @@ class API {
 class CustomInterceptor extends Interceptor {
   final FlutterSecureStorage storage;
   final String baseUrl;
+  final Dio dio;
 
-  CustomInterceptor(this.storage, this.baseUrl);
+  CustomInterceptor(this.storage, this.baseUrl, this.dio);
 
   @override
   void onRequest(
@@ -104,11 +118,9 @@ class CustomInterceptor extends Interceptor {
           final refreshToken =
               await storage.read(key: StorageKey.refreshToken.name);
           if (refreshToken != null) {
-            final response = await Dio().post(
-              '$baseUrl/auth/refresh',
-              data: {
-                'refreshToken': refreshToken,
-              },
+            final response = await dio.post(
+              '$baseUrl/auth/reissue',
+              data: {'refreshToken': refreshToken},
             );
 
             if (response.statusCode == 200) {
@@ -122,7 +134,7 @@ class CustomInterceptor extends Interceptor {
 
               err.requestOptions.headers['Authorization'] =
                   'Bearer $newAccessToken';
-              final retryResponse = await Dio().fetch(err.requestOptions);
+              final retryResponse = await dio.fetch(err.requestOptions);
               handler.resolve(retryResponse);
               return;
             }

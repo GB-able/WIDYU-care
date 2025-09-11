@@ -3,19 +3,23 @@ class Profile {
   final String? phoneNumber;
   final String email;
   final List<String> providers;
+  final bool hasParents;
 
-  Profile(
-      {required this.email,
-      required this.name,
-      required this.phoneNumber,
-      required this.providers});
+  Profile({
+    required this.email,
+    required this.name,
+    required this.phoneNumber,
+    this.providers = const [],
+    this.hasParents = false,
+  });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
     return Profile(
       email: json['email'],
       name: json['name'],
-      phoneNumber: json['phoneNumber'],
-      providers: json['providers'].cast<String>(),
+      phoneNumber: json['phoneNumber'] ?? json['phone'],
+      providers: json['providers'].cast<String>() ?? [],
+      hasParents: json['hasParents'] ?? false,
     );
   }
 }

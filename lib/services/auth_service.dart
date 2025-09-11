@@ -1,15 +1,16 @@
 import 'package:care/models/dtos/social_login_dto.dart';
 import 'package:care/models/enums/social_type.dart';
+import 'package:care/models/profile.dart';
 import 'package:care/services/api.dart';
 
 class AuthService {
   final API api = API();
-  final String url = "/auth/guardians";
+  final String url = "/auth";
 
   Future<SocialLoginDto?> _socialLogin(
       SocialType provider, Map<String, dynamic> body) async {
     final res = await api.req(
-      "$url/sign-in/social",
+      "$url/guardians/sign-in/social",
       method: HttpMethod.post,
       query: {
         "provider": provider.name,
@@ -26,9 +27,9 @@ class AuthService {
         await api.setToken(accessToken, refreshToken);
       }
       return SocialLoginDto.fromJson(data);
+    } else {
+      throw Exception('Social login failed');
     }
-
-    return null;
   }
 
   Future<SocialLoginDto?> appleLogin(
@@ -54,5 +55,43 @@ class AuthService {
       "accessToken": accessToken,
       "refreshToken": refreshToken,
     });
+  }
+
+  Future<void> logout() async {
+    final res = await api.req(
+      "$url/logout",
+      method: HttpMethod.post,
+    );
+    if (res.statusCode == 200) {
+      await api.removeToken();
+    }
+  }
+
+  Future<void> withdraw() async {
+    final res = await api.req(
+      "$url/guardians/withdraw",
+      method: HttpMethod.delete,
+      body: {
+        "reason": "테스트",
+      },
+    );
+    if (res.statusCode == 200) {
+      await api.removeToken();
+    }
+  }
+
+  Future<Profile?> getProfile() async {
+    if (!await api.hasToken()) {
+      return null;
+    }
+
+    final res = await api.req(
+      "$url/guardians/me",
+      method: HttpMethod.get,
+    );
+    if (res.statusCode == 200) {
+      return Profile.fromJson(res.data['data']);
+    }
+    return null;
   }
 }

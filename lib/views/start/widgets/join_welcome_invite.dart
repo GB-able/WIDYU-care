@@ -1,3 +1,4 @@
+import 'package:care/providers/user_provider.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
 import 'package:care/views/start/join_view_model.dart';
@@ -10,8 +11,8 @@ class JoinWelcomeInvite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<JoinViewModel>(
-      builder: (context, viewModel, _) => Column(
+    return Consumer2<JoinViewModel, UserProvider>(
+      builder: (context, viewModel, userProvider, _) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
@@ -21,9 +22,9 @@ class JoinWelcomeInvite extends StatelessWidget {
           ),
           AccountInfo(
             type: AccountInfoType.find,
-            name: viewModel.nameCtrl.text,
-            phone: viewModel.phoneCtrl.text,
-            email: viewModel.emailCtrl.text,
+            name: userProvider.profile!.name,
+            phone: userProvider.profile!.phoneNumber ?? "",
+            email: userProvider.profile!.email,
           ),
         ],
       ),

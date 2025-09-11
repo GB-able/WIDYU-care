@@ -25,6 +25,7 @@ dependencies:
   daum_postcode_search: ^0.0.4
   flutter_inappwebview: ^6.1.5
   collection: ^1.19.1
+  haptic_feedback: ^0.5.1+1
 
 dev_dependencies:
   flutter_test:

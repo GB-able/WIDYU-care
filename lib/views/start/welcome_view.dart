@@ -39,9 +39,9 @@ class WelcomeView extends StatelessWidget {
                       ),
                       AccountInfo(
                         type: AccountInfoType.notice,
-                        name: userProvider.user!.name,
-                        phone: userProvider.user!.phone,
-                        email: userProvider.user!.email,
+                        name: userProvider.profile!.name,
+                        phone: userProvider.profile!.phoneNumber!,
+                        email: userProvider.profile!.email,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 60, bottom: 24),
