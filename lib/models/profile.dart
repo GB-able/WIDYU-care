@@ -1,3 +1,5 @@
+import 'package:care/utils/extensions.dart';
+
 class Profile {
   final String name;
   final String? phoneNumber;
@@ -14,10 +16,11 @@ class Profile {
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
+    final String? phone = json['phoneNumber'] ?? json['phone'];
     return Profile(
       email: json['email'],
       name: json['name'],
-      phoneNumber: json['phoneNumber'] ?? json['phone'],
+      phoneNumber: phone.toPhone(),
       providers: json['providers'].cast<String>() ?? [],
       hasParents: json['hasParents'] ?? false,
     );

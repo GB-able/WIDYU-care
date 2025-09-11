@@ -65,7 +65,8 @@ class WelcomeView extends StatelessWidget {
             ],
           ),
           bottomNavigationBar: Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.fromLTRB(
+                16, 16, 16, 16 + MediaQuery.of(context).padding.bottom),
             child: TextBtn(
               text: "서비스 시작하기!",
               enable: true,

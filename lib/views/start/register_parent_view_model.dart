@@ -1,3 +1,5 @@
+import 'package:care/models/parent.dart';
+import 'package:care/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class ParentInput {
@@ -23,6 +25,7 @@ class ParentInput {
 enum InputMode { edit, open, close }
 
 class RegisterParentViewModel with ChangeNotifier {
+  final AuthService authService = AuthService();
   final List<ParentInput> accounts = [
     ParentInput(
       nameCtrl: TextEditingController(),
@@ -76,7 +79,8 @@ class RegisterParentViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> register(VoidCallback callback) async {
+  Future<bool> register(List<Parent> parents, VoidCallback callback) async {
+    await authService.registerParent(parents);
     callback();
     return true;
   } // [TODO] 부모님 생성 로직 넣기

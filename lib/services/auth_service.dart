@@ -1,5 +1,6 @@
 import 'package:care/models/dtos/social_login_dto.dart';
 import 'package:care/models/enums/social_type.dart';
+import 'package:care/models/parent.dart';
 import 'package:care/models/profile.dart';
 import 'package:care/services/api.dart';
 
@@ -93,5 +94,18 @@ class AuthService {
       return Profile.fromJson(res.data['data']);
     }
     return null;
+  }
+
+  Future<void> registerParent(List<Parent> parents) async {
+    final res = await api.req(
+      "$url/parents/sign-up",
+      method: HttpMethod.post,
+      body: parents.map((e) => e.toJson()).toList(),
+    );
+    if (res.statusCode == 200) {
+      return;
+    } else {
+      throw Exception('Register parent failed');
+    }
   }
 }

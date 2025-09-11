@@ -83,16 +83,13 @@ class RegisterParentView extends StatelessWidget {
                                   .map((e) => Parent(
                                       name: e.nameCtrl.text,
                                       inviteCode: e.inviteCodeCtrl.text,
-                                      phone: e.phoneNumberCtrl.text,
-                                      address: e.addressCtrl.text +
-                                          (e.detailAddressCtrl.text.isNotEmpty
-                                              ? " ${e.detailAddressCtrl.text}"
-                                              : ""),
+                                      phoneNumber: e.phoneNumberCtrl.text,
+                                      address: e.addressCtrl.text,
+                                      detailAddress: e.detailAddressCtrl.text,
                                       birthDate: e.birthDateCtrl.text))
                                   .toList();
-                              if (await viewModel.register(
+                              if (await viewModel.register(parents,
                                   () => userProvider.setParents(parents))) {
-                                // [TODO] 부모님 생성 실패 로직 넣기
                                 if (context.mounted) {
                                   userProvider.nextStep();
                                   context.go(RouteName.welcome);
