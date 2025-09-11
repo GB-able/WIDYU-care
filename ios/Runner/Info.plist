@@ -71,5 +71,9 @@
 	<string>${NAVER_CLIENT_SECRET}</string>
 	<key>NidAppName</key>
 	<string>위듀 케어</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key><true/>
+	</dict>
 </dict>
 </plist>
