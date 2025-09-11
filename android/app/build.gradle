@@ -61,6 +61,7 @@ android {
             'applicationName': 'io.flutter.app.FlutterApplication',
             kakaoNativeKey: kakaoNativeKey,
             appleClientId: appleClientId,
+            appleScheme: appleScheme,
             naverClientId: naverClientId,
             naverClientSecret: naverClientSecret,
         ]
