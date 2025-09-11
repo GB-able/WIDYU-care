@@ -23,7 +23,16 @@ class SocialLoginDto {
       profile:
           json['profile'] != null ? Profile.fromJson(json['profile']) : null,
       newProfile: json['newSocialAccountInfo'] != null
-          ? NewProfile.fromJson(json['newSocialAccountInfo'])
+          ? NewProfile(
+              oauthId: json['newSocialAccountInfo']['oauthId'],
+              provider: json['newSocialAccountInfo']['provider'],
+              name: json['newSocialAccountInfo']['name'],
+              email: json['newSocialAccountInfo']['email'],
+              phoneNumber: json['newSocialAccountInfo']['phoneNumber'] ??
+                      json['profile'] != null
+                  ? json['profile']['phoneNumber']
+                  : null,
+            )
           : null,
     );
   }
@@ -34,12 +43,14 @@ class NewProfile {
   final String provider;
   final String name;
   final String email;
+  final String phoneNumber;
 
   NewProfile({
     required this.oauthId,
     required this.provider,
     required this.name,
     required this.email,
+    required this.phoneNumber,
   });
 
   factory NewProfile.fromJson(Map<String, dynamic> json) {
@@ -48,6 +59,7 @@ class NewProfile {
       provider: json['provider'],
       name: json['name'],
       email: json['email'],
+      phoneNumber: json['phoneNumber'],
     );
   }
 }

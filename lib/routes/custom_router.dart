@@ -1,8 +1,11 @@
 import 'package:care/models/constants/route_name.dart';
+import 'package:care/models/dtos/social_login_dto.dart';
+import 'package:care/models/profile.dart';
 import 'package:care/routes/custom_page.dart';
 import 'package:care/views/find/find_email_view.dart';
 import 'package:care/views/find/find_password_view.dart';
 import 'package:care/views/home/home_view.dart';
+import 'package:care/views/start/integrate_view.dart';
 import 'package:care/views/start/join_view.dart';
 import 'package:care/views/start/join_view_model.dart';
 import 'package:care/views/start/login_view.dart';
@@ -58,6 +61,18 @@ class CustomRouter {
       CustomGoRoute.slideRoute(
         path: RouteName.findPassword,
         builder: (context, state) => const FindPasswordView(),
+      ),
+      CustomGoRoute.slideRoute(
+        path: RouteName.integrate,
+        builder: (context, state) {
+          final extra = state.extra! as Map<String, dynamic>;
+          final profile = extra["profile"] as Profile;
+          final newProfile = extra["newProfile"] as NewProfile?;
+          return IntegrateView(
+            profile: profile,
+            newProfile: newProfile,
+          );
+        },
       ),
     ],
   );

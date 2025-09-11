@@ -3,6 +3,7 @@ import 'package:care/models/profile.dart';
 import 'package:care/providers/user_provider.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
+import 'package:care/utils/show_toast.dart';
 import 'package:care/views/start/join_view_model.dart';
 import 'package:care/widgets/text_btn.dart';
 import 'package:flutter/material.dart';
@@ -53,8 +54,19 @@ class JoinBtns extends StatelessWidget {
                       ],
                     ),
                     TextBtn(
-                      onTap: () {
-                        viewModel.setJoinStatus(JoinStatus.emailPassword);
+                      onTap: () async {
+                        final profile = await viewModel.getJoinedProfile();
+                        if (!context.mounted) return;
+
+                        if (profile != null) {
+                          context.push(RouteName.integrate, extra: {
+                            "profile": profile,
+                            "newProfile": null,
+                          });
+                          viewModel.setJoinStatus(JoinStatus.emailPassword);
+                        } else {
+                          viewModel.setJoinStatus(JoinStatus.emailPassword);
+                        }
                       },
                       text: "다음",
                       enable: viewModel.isCodeVerified &&
@@ -67,37 +79,46 @@ class JoinBtns extends StatelessWidget {
               : const SizedBox.shrink(),
           JoinStatus.emailPassword => TextBtn(
               onTap: () {
-                final profile = Profile(
-                  name: viewModel.nameCtrl.text,
-                  email: viewModel.emailCtrl.text,
-                  phoneNumber: viewModel.phoneCtrl.text,
-                );
-                viewModel.join(() => userProvider.setProfile(profile));
+                viewModel.join(() async {
+                  await userProvider.init();
+                  viewModel.setJoinStatus(JoinStatus.welcomeInvite);
+                }, (String errorMsg) {
+                  showToast(errorMsg);
+                });
               },
               text: "회원가입하기",
               enable: viewModel.emailCtrl.text.isNotEmpty &&
                   viewModel.pwCtrl.text.isNotEmpty &&
                   !viewModel.isDuplicated,
             ),
-          JoinStatus.welcomeInvite => Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                GestureDetector(
-                  onTap: () {},
-                  child: Text("다른 케어러 초대 요청하기",
-                      style: MyTypo.button.copyWith(color: MyColor.grey800)),
-                ),
-                const SizedBox(height: 18),
-                TextBtn(
+          JoinStatus.welcomeInvite => userProvider.profile!.hasParents
+              ? TextBtn(
                   onTap: () {
-                    userProvider.nextStep();
-                    context.push(RouteName.registerParent);
+                    context.go(RouteName.home);
                   },
-                  text: "계속해서 부모님 계정 생성",
+                  text: "서비스 시작",
                   enable: true,
+                )
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: () {},
+                      child: Text("다른 케어러 초대 요청하기",
+                          style:
+                              MyTypo.button.copyWith(color: MyColor.grey800)),
+                    ),
+                    const SizedBox(height: 18),
+                    TextBtn(
+                      onTap: () {
+                        userProvider.nextStep();
+                        context.push(RouteName.registerParent);
+                      },
+                      text: "계속해서 부모님 계정 생성",
+                      enable: true,
+                    ),
+                  ],
                 ),
-              ],
-            ),
         },
       ),
     );

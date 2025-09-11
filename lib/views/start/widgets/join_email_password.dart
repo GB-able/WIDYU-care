@@ -1,5 +1,6 @@
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
+import 'package:care/utils/validators.dart';
 import 'package:care/views/start/join_view_model.dart';
 import 'package:care/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class JoinEmailPassword extends StatelessWidget {
           const SizedBox(height: 24),
           CustomTextField(
             controller: viewModel.emailCtrl,
-            hintText: "영문, 숫자를 조합하여 6~12자",
+            hintText: "example@widyu.com",
             validator: viewModel.emailValidator,
             inputAction: TextInputAction.next,
             title: "이메일",
@@ -42,9 +43,10 @@ class JoinEmailPassword extends StatelessWidget {
           CustomTextField(
             controller: viewModel.pwCtrl,
             hintText: "영문, 숫자, 특수기호 조합하여 8~12자",
-            validator: (value) => null,
+            validator: Validators.pwValidator,
             inputAction: TextInputAction.done,
             title: "비밀번호",
+            maxLength: 12,
           ),
         ],
       ),

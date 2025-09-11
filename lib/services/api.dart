@@ -57,6 +57,10 @@ class API {
     return accessToken != null && refreshToken != null;
   }
 
+  Future<void> setTempToken(String token) async {
+    await storage.write(key: StorageKey.tempToken.name, value: token);
+  }
+
   Future<void> setToken(String accessToken, String refreshToken) async {
     await Future.wait([
       storage.write(key: StorageKey.accessToken.name, value: accessToken),

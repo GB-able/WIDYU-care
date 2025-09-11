@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:care/models/profile.dart';
 import 'package:care/providers/user_provider.dart';
+import 'package:care/services/auth_service.dart';
+import 'package:care/services/sms_service.dart';
 import 'package:care/utils/validators.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +14,9 @@ enum JoinStatus {
 }
 
 class JoinViewModel with ChangeNotifier {
+  final SmsService smsService = SmsService();
+  final AuthService authService = AuthService();
+
   final _nameCtrl = TextEditingController();
   final _phoneCtrl = TextEditingController();
   final _codeCtrl = TextEditingController();
@@ -45,12 +51,16 @@ class JoinViewModel with ChangeNotifier {
   /* [NOTICE] JoinStatus.identityVerification */
   TextEditingController get nameCtrl => _nameCtrl;
   TextEditingController get phoneCtrl => _phoneCtrl;
+  String get phoneNumber => _phoneCtrl.text.replaceAll(RegExp(r'[^0-9]'), '');
   TextEditingController get codeCtrl => _codeCtrl;
   FocusNode get codeFocus => _codeFocus;
   bool get isCodeSent => _isCodeSent;
   bool get isCodeVerified => _isCodeVerified;
   bool get isCodeFailed => _isCodeFailed;
-  bool get canSend => _phoneCtrl.text.length == 13 && !isCodeVerified;
+  bool get canSend =>
+      _phoneCtrl.text.length == 13 &&
+      !isCodeVerified &&
+      nameCtrl.text.isNotEmpty;
   Timer? get timer => _timer;
   bool get isAgreed => _isAgreed;
   /* [NOTICE] JoinStatus.emailPassword */
@@ -79,13 +89,14 @@ class JoinViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void sendVerificationCode() {
-    // [TODO] 실제 인증번호 전송 로직 넣기
+  void sendVerificationCode() async {
     if (!canSend || isCodeVerified) return;
 
     if (_timer != null) {
       _timer!.cancel();
     }
+
+    await smsService.sendSms(nameCtrl.text, phoneNumber);
     _isCodeSent = true;
     _timer = Timer.periodic(const Duration(minutes: 5), (timer) {});
     notifyListeners();
@@ -95,10 +106,9 @@ class JoinViewModel with ChangeNotifier {
     });
   }
 
-  void verifyCode() {
+  void verifyCode() async {
     _codeFocus.unfocus();
-    // [TODO] 실제 인증번호 검증 로직 넣기
-    if (true) {
+    if (await smsService.isVerified(phoneNumber, codeCtrl.text)) {
       _isCodeFailed = false;
       _isCodeVerified = true;
     } else {
@@ -108,20 +118,30 @@ class JoinViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void checkDuplicated() {
-    // [TODO] 중복 이메일 확인 로직 넣기
-    _isDuplicated = false;
-    _isChecked = true;
+  Future<Profile?> getJoinedProfile() async {
+    return await authService.getJoinedProfile();
+  }
+
+  void checkDuplicated() async {
+    final available = await authService.checkDuplicated(emailCtrl.text);
+    if (available) {
+      _isDuplicated = false;
+      _isChecked = true;
+    }
     notifyListeners();
   }
 
-  void join(VoidCallback callback) {
-    // [TODO] 회원가입 로직 넣기
+  void join(VoidCallback onSuccess, Function(String) onFailure) async {
     if (emailCtrl.text.isEmpty || pwCtrl.text.isEmpty || isDuplicated) {
       return;
     }
-    callback();
-    setJoinStatus(JoinStatus.welcomeInvite);
+    try {
+      await authService.join(nameCtrl.text, emailCtrl.text,
+          phoneCtrl.text.replaceAll(RegExp(r'[^0-9]'), ''), pwCtrl.text);
+      onSuccess();
+    } catch (e) {
+      onFailure("회원가입에 실패했어요. 다시 시도해주세요.");
+    }
   }
 
   void toggleAgree() {

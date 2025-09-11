@@ -1,3 +1,4 @@
+import 'package:care/models/enums/social_type.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/effects.dart';
 import 'package:care/styles/typos.dart';
@@ -31,7 +32,7 @@ class AccountInfo extends StatelessWidget {
       {"title": "이름", "value": "$name 님"},
       {"title": "연락처", "value": phone},
       if (socials != null) {"title": "소셜 연동", "value": socials},
-      if (email != null) {"title": "이메일", "value": email}
+      if (email != null) {"title": "위듀 이메일", "value": email}
     ];
 
     return Container(
@@ -83,13 +84,28 @@ class AccountInfo extends StatelessWidget {
                     textAlign: TextAlign.end,
                   )
                 : Row(
+                    spacing: 4,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: (value as List<String>)
+                        .where((e) => e != "local")
+                        .toList()
                         .map(
-                          (e) => SvgPicture.asset(
-                            "assets/icons/ic_20_social_$e.svg",
-                            width: 20,
-                            height: 20,
+                          (e) => Container(
+                            width: 24,
+                            height: 24,
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: SocialType.values
+                                  .firstWhere((social) =>
+                                      social.name == e.toLowerCase())
+                                  .color,
+                            ),
+                            child: SvgPicture.asset(
+                              "assets/icons/ic_20_social_$e.svg",
+                              width: 20,
+                              height: 20,
+                            ),
                           ),
                         )
                         .toList(),

@@ -108,4 +108,74 @@ class AuthService {
       throw Exception('Register parent failed');
     }
   }
+
+  Future<Profile?> getJoinedProfile() async {
+    final res = await api.req(
+      "$url/guardians/profile/temporary",
+      method: HttpMethod.get,
+      tokenType: TokenType.temporary,
+    );
+    if (res.statusCode == 200) {
+      return Profile.fromJson(res.data['data']);
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> integrate(NewProfile profile) async {
+    final res = await api.req(
+      "$url/guardians/social/integration",
+      method: HttpMethod.post,
+      body: {
+        "name": profile.name,
+        "email": profile.email,
+        "phoneNumber": profile.phoneNumber,
+        "provider": profile.provider,
+        "oauthId": profile.oauthId,
+      },
+    );
+    if (res.statusCode == 200) {
+      return;
+    } else {
+      throw Exception('Integrate failed');
+    }
+  }
+
+  Future<void> join(
+      String name, String email, String phoneNumber, String password) async {
+    try {
+      final res = await api.req(
+        "$url/guardians/sign-up/local",
+        method: HttpMethod.post,
+        body: {
+          "name": name,
+          "email": email,
+          "phoneNumber": phoneNumber,
+          "password": password,
+        },
+        tokenType: TokenType.temporary,
+      );
+      if (res.statusCode == 200) {
+        final data = res.data['data'];
+        await api.setToken(data['accessToken'], data['refreshToken']);
+      } else {
+        throw Exception('Join failed');
+      }
+    } catch (e) {
+      throw Exception('Join failed');
+    }
+  }
+
+  Future<bool> checkDuplicated(String email) async {
+    final res = await api.req(
+      "$url/guardians/email/check",
+      method: HttpMethod.post,
+      body: {"email": email},
+    );
+    if (res.statusCode == 200) {
+      return res.data['data'];
+    } else {
+      throw Exception('Check duplicated failed');
+    }
+  }
 }

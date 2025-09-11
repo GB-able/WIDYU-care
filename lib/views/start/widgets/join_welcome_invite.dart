@@ -21,7 +21,7 @@ class JoinWelcomeInvite extends StatelessWidget {
                 style: MyTypo.title2.copyWith(color: MyColor.grey800)),
           ),
           AccountInfo(
-            type: AccountInfoType.find,
+            type: AccountInfoType.notice,
             name: userProvider.profile!.name,
             phone: userProvider.profile!.phoneNumber ?? "",
             email: userProvider.profile!.email,

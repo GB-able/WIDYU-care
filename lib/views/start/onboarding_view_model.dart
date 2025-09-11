@@ -2,6 +2,7 @@ import 'package:care/models/dtos/social_login_dto.dart';
 import 'package:care/models/enums/social_type.dart';
 import 'package:care/models/enums/storage_key.dart';
 import 'package:care/services/auth_service.dart';
+import 'package:care/utils/show_toast.dart';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -9,8 +10,10 @@ import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_naver_login/interface/types/naver_login_status.dart';
 import 'package:flutter_naver_login/interface/types/naver_token.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart'
+    hide Profile;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:care/models/profile.dart';
 
 class OnboardingViewModel extends ChangeNotifier {
   final storage = const FlutterSecureStorage();
@@ -31,7 +34,9 @@ class OnboardingViewModel extends ChangeNotifier {
   }
 
   Future<void> socialLogin(
-      SocialType type, VoidCallback onJoined, VoidCallback onNotJoined) async {
+      SocialType type,
+      Function(Profile profile, NewProfile newProfile) onJoined,
+      VoidCallback onNotJoined) async {
     SocialLoginDto? result;
     switch (type) {
       case SocialType.apple:
@@ -46,29 +51,14 @@ class OnboardingViewModel extends ChangeNotifier {
     }
 
     if (result == null) {
-      // 로그인 실패
+      showToast("${type.label} 로그인 실패");
       return;
     }
 
     if (result.newProfile == null) {
       onNotJoined();
-      // final profile = await authService.getProfile();
-      // if (profile == null) {
-      //   throw Exception('Profile is null');
-      // }
-
-      // if (profile.hasParents) {
-      //   goHome();
-      // } else {
-      //   goJoin(); // JOinStatus3
-      // }
     } else {
-      onJoined();
-      // if (type == SocialType.apple) {
-      //   // 전화번호 입력하기
-      // } else {
-      //   // 연동하기
-      // }
+      onJoined(result.profile!, result.newProfile!);
     }
   }
 
@@ -136,7 +126,8 @@ class OnboardingViewModel extends ChangeNotifier {
         final NaverToken token =
             await FlutterNaverLogin.getCurrentAccessToken();
         if (token.isValid()) {
-          await authService.naverLogin(token.accessToken, token.refreshToken);
+          return await authService.naverLogin(
+              token.accessToken, token.refreshToken);
         } else {
           throw Exception('Naver token is invalid');
         }

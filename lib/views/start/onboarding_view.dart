@@ -137,7 +137,13 @@ class _OnboardingViewState extends State<OnboardingView> {
                       SocialBtn(
                           type: SocialType.naver,
                           onTap: () async {
-                            viewModel.socialLogin(SocialType.naver, () async {
+                            viewModel.socialLogin(SocialType.naver,
+                                (profile, newProfile) {
+                              context.push(RouteName.integrate, extra: {
+                                "profile": profile,
+                                "newProfile": newProfile,
+                              });
+                            }, () async {
                               await userProvider.init();
                               if (context.mounted) {
                                 if (userProvider.profile == null) {
@@ -150,14 +156,19 @@ class _OnboardingViewState extends State<OnboardingView> {
                                       extra: JoinStatus.welcomeInvite);
                                 }
                               }
-                            }, () {});
+                            });
                           }),
                       SocialBtn(
                           type: SocialType.kakao,
                           onTap: () async {
                             viewModel.socialLogin(
                               SocialType.kakao,
-                              () {},
+                              (profile, newProfile) {
+                                context.push(RouteName.integrate, extra: {
+                                  "profile": profile,
+                                  "newProfile": newProfile,
+                                });
+                              },
                               () async {
                                 await userProvider.init();
                                 if (userProvider.profile == null ||
@@ -178,7 +189,12 @@ class _OnboardingViewState extends State<OnboardingView> {
                           onTap: () async {
                             viewModel.socialLogin(
                               SocialType.apple,
-                              () {},
+                              (profile, newProfile) {
+                                context.push(RouteName.integrate, extra: {
+                                  "profile": profile,
+                                  "newProfile": newProfile,
+                                });
+                              },
                               () async {
                                 await userProvider.init();
                                 if (userProvider.profile == null ||
