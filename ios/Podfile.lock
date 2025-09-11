@@ -12,6 +12,8 @@ PODS:
     - NidThirdPartyLogin (~> 5.0.0)
   - flutter_secure_storage (6.0.0):
     - Flutter
+  - fluttertoast (0.0.2):
+    - Flutter
   - haptic_feedback (0.5.1):
     - Flutter
   - kakao_flutter_sdk_common (1.9.7-3):
@@ -32,6 +34,7 @@ DEPENDENCIES:
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
   - flutter_naver_login (from `.symlinks/plugins/flutter_naver_login/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - haptic_feedback (from `.symlinks/plugins/haptic_feedback/ios`)
   - kakao_flutter_sdk_common (from `.symlinks/plugins/kakao_flutter_sdk_common/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
@@ -52,6 +55,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_naver_login/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
   haptic_feedback:
     :path: ".symlinks/plugins/haptic_feedback/ios"
   kakao_flutter_sdk_common:
@@ -68,6 +73,7 @@ SPEC CHECKSUMS:
   flutter_inappwebview_ios: b89ba3482b96fb25e00c967aae065701b66e9b99
   flutter_naver_login: 965ca284c1a64f0185dfaf9dfd1b8f69f34e6c11
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
+  fluttertoast: 2c67e14dce98bbdb200df9e1acf610d7a6264ea1
   haptic_feedback: fd1d8509833f58f164fc12122c0357fa9b2750e0
   kakao_flutter_sdk_common: 600d55b532da0bd37268a529e1add49302477710
   NidThirdPartyLogin: ed291a543cc60a433bcad522b6bf7d3126ad4fdc

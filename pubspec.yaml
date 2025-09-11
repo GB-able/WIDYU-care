@@ -26,6 +26,7 @@ dependencies:
   flutter_inappwebview: ^6.1.5
   collection: ^1.19.1
   haptic_feedback: ^0.5.1+1
+  fluttertoast: ^8.2.12
 
 dev_dependencies:
   flutter_test:
