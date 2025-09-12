@@ -1,4 +1,3 @@
-import 'package:care/providers/user_provider.dart';
 import 'package:care/views/start/join_view_model.dart';
 import 'package:care/views/start/widgets/join_btns.dart';
 import 'package:care/views/start/widgets/join_welcome_invite.dart';

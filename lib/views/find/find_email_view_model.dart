@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:care/models/profile.dart';
+import 'package:care/services/auth_service.dart';
+import 'package:care/services/sms_service.dart';
 import 'package:flutter/material.dart';
 
 enum FindEmailStatus {
@@ -8,6 +11,8 @@ enum FindEmailStatus {
 }
 
 class FindEmailViewModel with ChangeNotifier {
+  final authService = AuthService();
+  final smsService = SmsService();
   FindEmailStatus _findStatus = FindEmailStatus.identity;
 
   final _nameCtrl = TextEditingController();
@@ -18,7 +23,7 @@ class FindEmailViewModel with ChangeNotifier {
   bool _isCodeVerified = false;
   bool _isCodeFailed = false;
   Timer? _timer;
-  String? _email;
+  Profile? _profile;
 
   FindEmailViewModel() {
     _nameCtrl.addListener(() => notifyListeners());
@@ -32,6 +37,7 @@ class FindEmailViewModel with ChangeNotifier {
   FindEmailStatus get findStatus => _findStatus;
   TextEditingController get nameCtrl => _nameCtrl;
   TextEditingController get phoneCtrl => _phoneCtrl;
+  String get phoneNumber => _phoneCtrl.text.replaceAll(RegExp(r'[^0-9]'), '');
   TextEditingController get codeCtrl => _codeCtrl;
   FocusNode get codeFocus => _codeFocus;
   bool get isCodeSent => _isCodeSent;
@@ -39,7 +45,7 @@ class FindEmailViewModel with ChangeNotifier {
   bool get isCodeFailed => _isCodeFailed;
   bool get canSend => _phoneCtrl.text.length == 13 && !isCodeVerified;
   Timer? get timer => _timer;
-  String? get email => _email;
+  Profile? get profile => _profile;
 
   String? codeValidator(String? value) {
     if (_isCodeFailed) {
@@ -53,16 +59,16 @@ class FindEmailViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void sendVerificationCode() {
-    // [TODO] 실제 인증번호 전송 로직 넣기
+  void sendVerificationCode() async {
     if (!canSend || isCodeVerified) return;
 
     if (_timer != null) {
       _timer!.cancel();
     }
+
+    await smsService.sendSms(nameCtrl.text, phoneNumber);
     _isCodeSent = true;
     _timer = Timer.periodic(const Duration(minutes: 5), (timer) {});
-    _codeCtrl.clear();
     notifyListeners();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -70,10 +76,9 @@ class FindEmailViewModel with ChangeNotifier {
     });
   }
 
-  void verifyCode() {
+  void verifyCode() async {
     _codeFocus.unfocus();
-    // [TODO] 실제 인증번호 검증 로직 넣기
-    if (true) {
+    if (await smsService.isVerified(phoneNumber, codeCtrl.text)) {
       _isCodeFailed = false;
       _isCodeVerified = true;
     } else {
@@ -83,9 +88,13 @@ class FindEmailViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void find() {
-    // [TODO] 실제 이메일 찾기 로직 넣기
-    // _email = "example@widyu.com";
+  void find() async {
+    _profile = await authService.getJoinedProfile();
+    if (_profile == null) {
+      setFindStatus(FindEmailStatus.fail);
+    } else {
+      setFindStatus(FindEmailStatus.success);
+    }
   }
 
   void setFindStatus(FindEmailStatus status) {

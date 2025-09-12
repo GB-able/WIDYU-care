@@ -20,9 +20,9 @@ class EmailSuccess extends StatelessWidget {
           const SizedBox(height: 32),
           AccountInfo(
             type: AccountInfoType.find,
-            name: viewModel.nameCtrl.text,
-            phone: viewModel.phoneCtrl.text,
-            email: viewModel.email,
+            name: viewModel.profile!.name,
+            phone: viewModel.profile!.phoneNumber!,
+            email: viewModel.profile!.email,
           ),
         ],
       ),

@@ -78,7 +78,7 @@ class AccountInfo extends StatelessWidget {
             child: value is String
                 ? Text(
                     value,
-                    style: title == "이메일" && type == AccountInfoType.find
+                    style: title == "위듀 이메일" && type == AccountInfoType.find
                         ? MyTypo.title3.copyWith(color: MyColor.primary)
                         : MyTypo.body1.copyWith(color: MyColor.grey900),
                     textAlign: TextAlign.end,

@@ -19,14 +19,7 @@ class EmailBtns extends StatelessWidget {
         child: switch (viewModel.findStatus) {
           FindEmailStatus.identity => TextBtn(
               text: "이메일 찾기",
-              onTap: () {
-                viewModel.find();
-                if (viewModel.email == null) {
-                  viewModel.setFindStatus(FindEmailStatus.fail);
-                } else {
-                  viewModel.setFindStatus(FindEmailStatus.success);
-                }
-              },
+              onTap: viewModel.find,
               enable: viewModel.isCodeVerified &&
                   viewModel.nameCtrl.text.isNotEmpty &&
                   viewModel.phoneCtrl.text.isNotEmpty,
@@ -63,14 +56,7 @@ class EmailBtns extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 TextBtn(
-                  onTap: () {
-                    viewModel.find();
-                    if (viewModel.email == null) {
-                      viewModel.setFindStatus(FindEmailStatus.fail);
-                    } else {
-                      viewModel.setFindStatus(FindEmailStatus.success);
-                    }
-                  },
+                  onTap: viewModel.find,
                   text: "이메일 다시 찾기",
                   enable: viewModel.nameCtrl.text.isNotEmpty &&
                       viewModel.phoneCtrl.text.isNotEmpty &&
