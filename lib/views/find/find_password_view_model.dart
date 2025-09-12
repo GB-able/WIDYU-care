@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:care/services/auth_service.dart';
+import 'package:care/services/sms_service.dart';
+import 'package:care/utils/validators.dart';
 import 'package:flutter/material.dart';
 
 enum FindPasswordStatus {
@@ -28,6 +31,9 @@ class PwInput with ChangeNotifier {
 }
 
 class FindPasswordViewModel with ChangeNotifier {
+  final authService = AuthService();
+  final smsService = SmsService();
+
   FindPasswordStatus _findStatus = FindPasswordStatus.identity;
 
   final _nameCtrl = TextEditingController();
@@ -40,6 +46,7 @@ class FindPasswordViewModel with ChangeNotifier {
   bool _isCodeSent = false;
   bool _isCodeVerified = false;
   bool _isCodeFailed = false;
+  int _remainingSeconds = 0;
   Timer? _timer;
   bool _canReset = false;
 
@@ -59,6 +66,7 @@ class FindPasswordViewModel with ChangeNotifier {
   TextEditingController get nameCtrl => _nameCtrl;
   TextEditingController get emailCtrl => _emailCtrl;
   TextEditingController get phoneCtrl => _phoneCtrl;
+  String get phoneNumber => _phoneCtrl.text.replaceAll(RegExp(r'[^0-9]'), '');
   TextEditingController get codeCtrl => _codeCtrl;
   PwInput get pwInput => _pwInput;
   PwInput get pwConfirmInput => _pwConfirmInput;
@@ -66,8 +74,19 @@ class FindPasswordViewModel with ChangeNotifier {
   bool get isCodeSent => _isCodeSent;
   bool get isCodeVerified => _isCodeVerified;
   bool get isCodeFailed => _isCodeFailed;
-  bool get canSend => _phoneCtrl.text.length == 13 && !isCodeVerified;
-  Timer? get timer => _timer;
+  bool get canSend =>
+      _phoneCtrl.text.length == 13 &&
+      !isCodeVerified &&
+      _nameCtrl.text.isNotEmpty &&
+      Validators.emailValidator(emailCtrl.text) == null;
+  String get timer {
+    if (_remainingSeconds <= 0) return '';
+    final minutes = _remainingSeconds ~/ 60;
+    final seconds = _remainingSeconds % 60;
+
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
   bool get canReset => _canReset;
 
   String? codeValidator(String? value) {
@@ -82,16 +101,29 @@ class FindPasswordViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void sendVerificationCode() {
-    // [TODO] 실제 인증번호 전송 로직 넣기
+  void sendVerificationCode() async {
     if (!canSend || isCodeVerified) return;
 
     if (_timer != null) {
       _timer!.cancel();
     }
-    _isCodeSent = true;
-    _timer = Timer.periodic(const Duration(minutes: 5), (timer) {});
-    _codeCtrl.clear();
+
+    if (await smsService.sendSmsForPw(
+        nameCtrl.text, emailCtrl.text, phoneNumber)) {
+      _canReset = true;
+      _isCodeSent = true;
+      _remainingSeconds = 300;
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        _remainingSeconds--;
+        if (_remainingSeconds <= 0) {
+          timer.cancel();
+          _isCodeSent = false;
+        }
+        notifyListeners();
+      });
+    } else {
+      setFindStatus(FindPasswordStatus.fail);
+    }
     notifyListeners();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -99,10 +131,9 @@ class FindPasswordViewModel with ChangeNotifier {
     });
   }
 
-  void verifyCode() {
+  void verifyCode() async {
     _codeFocus.unfocus();
-    // [TODO] 실제 인증번호 검증 로직 넣기
-    if (true) {
+    if (await smsService.isVerified(phoneNumber, codeCtrl.text)) {
       _isCodeFailed = false;
       _isCodeVerified = true;
     } else {
@@ -112,13 +143,14 @@ class FindPasswordViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void checkCanReset() {
-    // [TODO] 실제 비밀번호 찾기 로직 넣기
-    _canReset = false;
-  }
-
-  void reset() {
-    // [TODO] 실제 비밀번호 재설정 로직 넣기
+  void reset(VoidCallback onSuccess) async {
+    try {
+      await authService.resetPassword(
+          pwInput.ctrl.text, pwConfirmInput.ctrl.text);
+      onSuccess();
+    } catch (e) {
+      throw Exception('Reset password failed');
+    }
   }
 
   void setFindStatus(FindPasswordStatus status) {

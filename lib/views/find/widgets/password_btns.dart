@@ -1,6 +1,7 @@
 import 'package:care/models/constants/route_name.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
+import 'package:care/utils/validators.dart';
 import 'package:care/views/find/find_password_view_model.dart';
 import 'package:care/widgets/text_btn.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +21,7 @@ class PasswordBtns extends StatelessWidget {
           FindPasswordStatus.identity => TextBtn(
               text: "비밀번호 재설정",
               onTap: () {
-                viewModel.checkCanReset();
-                if (viewModel.canReset) {
-                  viewModel.setFindStatus(FindPasswordStatus.success);
-                } else {
-                  viewModel.setFindStatus(FindPasswordStatus.fail);
-                }
+                viewModel.setFindStatus(FindPasswordStatus.success);
               },
               enable: viewModel.isCodeVerified &&
                   viewModel.emailCtrl.text.isNotEmpty &&
@@ -34,19 +30,22 @@ class PasswordBtns extends StatelessWidget {
             ),
           FindPasswordStatus.success => TextBtn(
               onTap: () {
-                viewModel.reset();
-                context.go(RouteName.login);
+                viewModel.reset(() {
+                  context.go(RouteName.onboarding);
+                });
               },
               text: "비밀번호 변경",
-              enable: viewModel.pwInput.ctrl.text.isNotEmpty &&
-                  viewModel.pwConfirmInput.ctrl.text.isNotEmpty,
+              enable:
+                  Validators.pwValidator(viewModel.pwInput.ctrl.text) == null &&
+                      viewModel.pwInput.ctrl.text ==
+                          viewModel.pwConfirmInput.ctrl.text,
             ),
           FindPasswordStatus.fail => Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 GestureDetector(
                   onTap: () {
-                    context.go(RouteName.join);
+                    context.go(RouteName.onboarding);
                   },
                   child: Text("회원가입 하러 가기",
                       style: MyTypo.button.copyWith(color: MyColor.grey800)),
@@ -54,12 +53,7 @@ class PasswordBtns extends StatelessWidget {
                 const SizedBox(height: 12),
                 TextBtn(
                   onTap: () {
-                    viewModel.checkCanReset();
-                    if (viewModel.canReset) {
-                      viewModel.setFindStatus(FindPasswordStatus.success);
-                    } else {
-                      viewModel.setFindStatus(FindPasswordStatus.fail);
-                    }
+                    viewModel.setFindStatus(FindPasswordStatus.success);
                   },
                   text: "비밀번호 재설정",
                   enable: viewModel.nameCtrl.text.isNotEmpty &&

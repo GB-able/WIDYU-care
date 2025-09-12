@@ -68,25 +68,36 @@ class PasswordRefind extends StatelessWidget {
                 inputAction: TextInputAction.next,
               ),
               if (viewModel.isCodeSent)
-                CustomTextField(
-                  controller: viewModel.codeCtrl,
-                  hintText: "인증번호 입력",
-                  validator: viewModel.codeValidator,
-                  keyboardType: TextInputType.number,
-                  title: "인증번호",
-                  focusNode: viewModel.codeFocus,
-                  suffix: GestureDetector(
-                    onTap: viewModel.verifyCode,
-                    child: Text(
-                      "인증 완료",
-                      style: !viewModel.isCodeVerified
-                          ? MyTypo.button.copyWith(color: MyColor.secondary)
-                          : MyTypo.button.copyWith(color: MyColor.grey400),
+                Column(
+                  spacing: 4,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomTextField(
+                      controller: viewModel.codeCtrl,
+                      hintText: "인증번호 입력",
+                      validator: viewModel.codeValidator,
+                      keyboardType: TextInputType.number,
+                      title: "인증번호",
+                      focusNode: viewModel.codeFocus,
+                      suffix: GestureDetector(
+                        onTap: viewModel.verifyCode,
+                        child: Text(
+                          "인증 완료",
+                          style: !viewModel.isCodeVerified
+                              ? MyTypo.button.copyWith(color: MyColor.secondary)
+                              : MyTypo.button.copyWith(color: MyColor.grey400),
+                        ),
+                      ),
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      inputAction: TextInputAction.done,
+                      enabled: !viewModel.isCodeVerified,
                     ),
-                  ),
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  inputAction: TextInputAction.done,
-                  enabled: !viewModel.isCodeVerified,
+                    viewModel.timer.isEmpty
+                        ? const SizedBox.shrink()
+                        : Text(viewModel.timer,
+                            style: MyTypo.helper
+                                .copyWith(color: MyColor.secondary)),
+                  ],
                 ),
             ],
           ),

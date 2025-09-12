@@ -22,9 +22,9 @@ class FindEmailViewModel with ChangeNotifier {
   bool _isCodeSent = false;
   bool _isCodeVerified = false;
   bool _isCodeFailed = false;
+  int _remainingSeconds = 0;
   Timer? _timer;
   Profile? _profile;
-
   FindEmailViewModel() {
     _nameCtrl.addListener(() => notifyListeners());
     _phoneCtrl.addListener(() => notifyListeners());
@@ -44,7 +44,14 @@ class FindEmailViewModel with ChangeNotifier {
   bool get isCodeVerified => _isCodeVerified;
   bool get isCodeFailed => _isCodeFailed;
   bool get canSend => _phoneCtrl.text.length == 13 && !isCodeVerified;
-  Timer? get timer => _timer;
+  String get timer {
+    if (_remainingSeconds <= 0) return '';
+    final minutes = _remainingSeconds ~/ 60;
+    final seconds = _remainingSeconds % 60;
+
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
   Profile? get profile => _profile;
 
   String? codeValidator(String? value) {
@@ -68,7 +75,15 @@ class FindEmailViewModel with ChangeNotifier {
 
     await smsService.sendSms(nameCtrl.text, phoneNumber);
     _isCodeSent = true;
-    _timer = Timer.periodic(const Duration(minutes: 5), (timer) {});
+    _remainingSeconds = 300;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _remainingSeconds--;
+      if (_remainingSeconds <= 0) {
+        timer.cancel();
+        _isCodeSent = false;
+      }
+      notifyListeners();
+    });
     notifyListeners();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -22,17 +22,18 @@ class _SplashViewState extends State<SplashView> {
   Future<void> init() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     await userProvider.init();
-
-    final profile = userProvider.profile;
-    if (mounted) {
-      if (profile == null) {
-        context.go(RouteName.onboarding);
-      } else if (!profile.hasParents) {
-        context.go(RouteName.join, extra: JoinStatus.welcomeInvite);
-      } else {
-        context.go(RouteName.home);
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      final profile = userProvider.profile;
+      if (mounted) {
+        if (profile == null) {
+          context.go(RouteName.onboarding);
+        } else if (!profile.hasParents) {
+          context.go(RouteName.join, extra: JoinStatus.welcomeInvite);
+        } else {
+          context.go(RouteName.home);
+        }
       }
-    }
+    });
   }
 
   @override

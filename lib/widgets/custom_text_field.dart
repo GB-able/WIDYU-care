@@ -135,7 +135,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           style: MyTypo.hint.copyWith(
               color: widget.enabled ? MyColor.grey900 : MyColor.grey300),
           cursorColor: MyColor.grey900,
-          enabled: widget.enabled,
+          readOnly: !widget.enabled,
         ),
       ],
     );

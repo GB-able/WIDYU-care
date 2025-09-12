@@ -18,6 +18,22 @@ class SmsService {
     }
   }
 
+  Future<bool> sendSmsForPw(
+      String name, String email, String phoneNumber) async {
+    final res = await api.req(
+      "$url/send-if-member-exist",
+      method: HttpMethod.post,
+      body: {"name": name, "email": email, "phoneNumber": phoneNumber},
+    );
+    if (res.statusCode == 200) {
+      return true;
+    } else if (res.data['code'] == "MEMBER_4041") {
+      return false;
+    } else {
+      throw Exception('Send sms failed');
+    }
+  }
+
   Future<bool> isVerified(String phoneNumber, String code) async {
     try {
       final res = await api.req(

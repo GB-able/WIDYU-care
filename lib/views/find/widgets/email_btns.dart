@@ -49,7 +49,7 @@ class EmailBtns extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    context.go(RouteName.join);
+                    context.go(RouteName.onboarding);
                   },
                   child: Text("회원가입 하러 가기",
                       style: MyTypo.button.copyWith(color: MyColor.grey800)),

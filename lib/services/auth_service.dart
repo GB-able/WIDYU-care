@@ -78,6 +78,8 @@ class AuthService {
     );
     if (res.statusCode == 200) {
       await api.removeToken();
+    } else {
+      throw Exception('Withdraw failed');
     }
   }
 
@@ -176,6 +178,18 @@ class AuthService {
       return res.data['data'];
     } else {
       throw Exception('Check duplicated failed');
+    }
+  }
+
+  Future<void> resetPassword(String password, String confirmPassword) async {
+    final res = await api.req(
+      "$url/guardians/password",
+      method: HttpMethod.patch,
+      body: {"password": password, "confirmPassword": confirmPassword},
+      tokenType: TokenType.temporary,
+    );
+    if (res.statusCode != 200) {
+      throw Exception('Reset password failed');
     }
   }
 }

@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:care/models/profile.dart';
-import 'package:care/providers/user_provider.dart';
 import 'package:care/services/auth_service.dart';
 import 'package:care/services/sms_service.dart';
 import 'package:care/utils/validators.dart';
@@ -27,6 +25,7 @@ class JoinViewModel with ChangeNotifier {
   bool _isCodeVerified = false;
   bool _isCodeFailed = false;
   Timer? _timer;
+  int _remainingSeconds = 0;
   bool _isAgreed = false;
   bool _isDuplicated = false;
   bool _isChecked = false;
@@ -61,7 +60,14 @@ class JoinViewModel with ChangeNotifier {
       _phoneCtrl.text.length == 13 &&
       !isCodeVerified &&
       nameCtrl.text.isNotEmpty;
-  Timer? get timer => _timer;
+  String get timer {
+    if (_remainingSeconds <= 0) return '';
+    final minutes = _remainingSeconds ~/ 60;
+    final seconds = _remainingSeconds % 60;
+
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
   bool get isAgreed => _isAgreed;
   /* [NOTICE] JoinStatus.emailPassword */
   TextEditingController get emailCtrl => _emailCtrl;
@@ -98,7 +104,17 @@ class JoinViewModel with ChangeNotifier {
 
     await smsService.sendSms(nameCtrl.text, phoneNumber);
     _isCodeSent = true;
-    _timer = Timer.periodic(const Duration(minutes: 5), (timer) {});
+    _remainingSeconds = 300;
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _remainingSeconds--;
+      if (_remainingSeconds <= 0) {
+        timer.cancel();
+        _isCodeSent = false;
+      }
+      notifyListeners();
+    });
+
     notifyListeners();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
