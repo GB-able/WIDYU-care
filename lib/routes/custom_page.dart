@@ -6,7 +6,7 @@ extension CustomGoRoute on GoRoute {
     required String path,
     required Widget Function(BuildContext, GoRouterState) builder,
     String? name,
-    Duration duration = const Duration(milliseconds: 300),
+    Duration duration = const Duration(milliseconds: 100),
   }) {
     return GoRoute(
       path: path,
