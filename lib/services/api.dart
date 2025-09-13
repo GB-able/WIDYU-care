@@ -32,6 +32,7 @@ class API {
     path = '/v$version$path';
     final options = Options(
       extra: {'tokenType': tokenType},
+      validateStatus: (status) => true,
     );
 
     switch (method) {

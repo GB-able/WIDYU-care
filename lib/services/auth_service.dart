@@ -192,4 +192,17 @@ class AuthService {
       throw Exception('Reset password failed');
     }
   }
+
+  Future<bool> login(String email, String password) async {
+    try {
+      await api.req(
+        "$url/guardians/sign-in/local",
+        method: HttpMethod.post,
+        body: {"email": email, "password": password},
+      );
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

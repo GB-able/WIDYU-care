@@ -1,6 +1,7 @@
 import 'package:care/models/constants/route_name.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
+import 'package:care/utils/show_toast.dart';
 import 'package:care/views/start/login_view_model.dart';
 import 'package:care/widgets/custom_app_bar.dart';
 import 'package:care/widgets/custom_text_field.dart';
@@ -66,9 +67,11 @@ class LoginView extends StatelessWidget {
                           enable: true,
                           onTap: () async {
                             FocusScope.of(context).unfocus();
-                            if (await viewModel.login()) {
-                              print("로그인 성공"); // [TODO] 로그인 성공 후 처리
-                            }
+                            viewModel.login(() {
+                              context.go(RouteName.home);
+                            }, () {
+                              showToast("로그인에 실패했습니다.");
+                            });
                           },
                         ),
                       ),

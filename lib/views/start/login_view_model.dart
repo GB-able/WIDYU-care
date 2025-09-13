@@ -1,8 +1,10 @@
+import 'package:care/services/auth_service.dart';
 import 'package:care/utils/validators.dart';
 import 'package:flutter/cupertino.dart';
 
 class LoginViewModel with ChangeNotifier {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final AuthService authService = AuthService();
 
   final _emailCtrl = TextEditingController();
   final _pwCtrl = TextEditingController();
@@ -47,19 +49,17 @@ class LoginViewModel with ChangeNotifier {
     return null;
   }
 
-  Future<bool> login() async {
+  void login(VoidCallback onSuccess, VoidCallback onFailure) async {
     if (formKey.currentState?.validate() ?? false) {
-      if (false) {
-        // [TODO] 실제 로그인 로직 넣기
-        await Future.delayed(const Duration(seconds: 1));
-        return true;
+      if (await authService.login(_emailCtrl.text, _pwCtrl.text)) {
+        onSuccess();
       } else {
         _isFailed = true;
+        onFailure();
         notifyListeners();
-        return false;
       }
     } else {
-      return false;
+      onFailure();
     }
   }
 
