@@ -2,6 +2,7 @@ import 'package:care/models/constants/route_name.dart';
 import 'package:care/providers/user_provider.dart';
 import 'package:care/views/start/join_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,30 +23,24 @@ class _SplashViewState extends State<SplashView> {
   Future<void> init() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     await userProvider.init();
-    Future.delayed(const Duration(milliseconds: 1500), () {
-      final profile = userProvider.profile;
-      if (mounted) {
-        if (profile == null) {
-          context.go(RouteName.onboarding);
-        } else if (!profile.hasParents) {
-          context.go(RouteName.join, extra: JoinStatus.welcomeInvite);
-        } else {
-          context.go(RouteName.home);
-        }
+
+    final profile = userProvider.profile;
+    if (mounted) {
+      if (profile == null) {
+        context.pushReplacement(RouteName.onboarding);
+      } else if (!profile.hasParents) {
+        context.pushReplacement(RouteName.join,
+            extra: JoinStatus.welcomeInvite);
+      } else {
+        context.pushReplacement(RouteName.home);
       }
-    });
+    }
+    await Future.delayed(const Duration(milliseconds: 1500));
+    FlutterNativeSplash.remove();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Image.asset(
-          'assets/images/img_189_logo_splash.png',
-          width: 189,
-          fit: BoxFit.fitWidth,
-        ),
-      ),
-    );
+    return const SizedBox();
   }
 }

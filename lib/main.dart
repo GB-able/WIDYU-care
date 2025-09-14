@@ -3,16 +3,19 @@ import 'package:care/routes/custom_router.dart';
 import 'package:care/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await dotenv.load(fileName: ".env");
 
   KakaoSdk.init(
     nativeAppKey: dotenv.env['KAKAO_NATIVE_KEY'],
   );
+
   runApp(const MyApp());
 }
 

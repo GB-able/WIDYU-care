@@ -20,11 +20,11 @@ class CustomRouter {
   static final router = GoRouter(
     initialLocation: RouteName.splash,
     routes: [
-      CustomGoRoute.slideRoute(
+      CustomGoRoute.fadeRoute(
         path: RouteName.splash,
         builder: (context, state) => const SplashView(),
       ),
-      CustomGoRoute.slideRoute(
+      CustomGoRoute.fadeRoute(
         path: RouteName.onboarding,
         builder: (context, state) => const OnboardingView(),
       ),
@@ -50,7 +50,7 @@ class CustomRouter {
         path: RouteName.searchAddress,
         builder: (context, state) => const SearchAddressView(),
       ),
-      CustomGoRoute.slideRoute(
+      CustomGoRoute.fadeRoute(
         path: RouteName.home,
         builder: (context, state) => const HomeView(),
       ),

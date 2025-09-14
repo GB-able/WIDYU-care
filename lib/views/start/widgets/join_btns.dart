@@ -1,5 +1,4 @@
 import 'package:care/models/constants/route_name.dart';
-import 'package:care/models/profile.dart';
 import 'package:care/providers/user_provider.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
