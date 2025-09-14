@@ -31,7 +31,7 @@ class SocialBtn extends StatelessWidget {
               height: 20,
             ),
             Text(
-              "${type.label}로 시작하기",
+              "${type.label}로 계속하기",
               style: MyTypo.button.copyWith(
                 color: type == SocialType.naver ? Colors.white : Colors.black,
               ),

@@ -211,7 +211,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                             );
                           }),
                       TextBtn(
-                        text: "이메일로 시작하기",
+                        text: "이메일로 계속하기",
                         enable: true,
                         onTap: () {
                           context.push(RouteName.login);
