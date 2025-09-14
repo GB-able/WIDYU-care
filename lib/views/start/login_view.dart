@@ -2,6 +2,7 @@ import 'package:care/models/constants/route_name.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
 import 'package:care/utils/show_toast.dart';
+import 'package:care/views/start/join_view_model.dart';
 import 'package:care/views/start/login_view_model.dart';
 import 'package:care/widgets/custom_app_bar.dart';
 import 'package:care/widgets/custom_text_field.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:care/providers/user_provider.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -18,8 +20,8 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => LoginViewModel(),
-      child: Consumer<LoginViewModel>(
-        builder: (context, viewModel, _) => Scaffold(
+      child: Consumer2<LoginViewModel, UserProvider>(
+        builder: (context, viewModel, userProvider, _) => Scaffold(
           appBar: const CustomAppBar(),
           body: GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
@@ -67,8 +69,16 @@ class LoginView extends StatelessWidget {
                           enable: true,
                           onTap: () async {
                             FocusScope.of(context).unfocus();
-                            viewModel.login(() {
-                              context.go(RouteName.home);
+                            viewModel.login(() async {
+                              await userProvider.init();
+                              if (!context.mounted) return;
+
+                              if (userProvider.profile!.hasParents) {
+                                context.go(RouteName.home);
+                              } else {
+                                context.go(RouteName.join,
+                                    extra: JoinStatus.welcomeInvite);
+                              }
                             }, () {
                               showToast("로그인에 실패했습니다.");
                             });

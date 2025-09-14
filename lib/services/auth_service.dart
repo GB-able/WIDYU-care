@@ -195,12 +195,18 @@ class AuthService {
 
   Future<bool> login(String email, String password) async {
     try {
-      await api.req(
+      final res = await api.req(
         "$url/guardians/sign-in/local",
         method: HttpMethod.post,
         body: {"email": email, "password": password},
       );
-      return true;
+      if (res.statusCode == 200) {
+        final data = res.data['data'];
+        await api.setToken(data['accessToken'], data['refreshToken']);
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
       return false;
     }
