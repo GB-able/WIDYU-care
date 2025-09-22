@@ -2,6 +2,7 @@ import 'package:care/models/constants/route_name.dart';
 import 'package:care/models/dtos/social_login_dto.dart';
 import 'package:care/models/profile.dart';
 import 'package:care/routes/custom_page.dart';
+import 'package:care/views/album/album_view.dart';
 import 'package:care/views/find/find_email_view.dart';
 import 'package:care/views/find/find_password_view.dart';
 import 'package:care/views/home/home_view.dart';
@@ -13,13 +14,53 @@ import 'package:care/views/start/onboarding_view.dart';
 import 'package:care/views/start/register_parent_view.dart';
 import 'package:care/views/start/splash_view.dart';
 import 'package:care/views/start/welcome_view.dart';
+import 'package:care/widgets/bot_nav.dart';
 import 'package:care/widgets/search_address_view.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart';
 
 class CustomRouter {
   static final router = GoRouter(
     initialLocation: RouteName.splash,
     routes: [
+      StatefulShellRoute.indexedStack(
+        branches: [
+          StatefulShellBranch(routes: [
+            CustomGoRoute.fadeRoute(
+              path: RouteName.home,
+              builder: (context, state) => const HomeView(), //const NavView(),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            CustomGoRoute.fadeRoute(
+              path: RouteName.goal,
+              builder: (context, state) => const Placeholder(),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            CustomGoRoute.fadeRoute(
+              path: RouteName.location,
+              builder: (context, state) => const Placeholder(),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            CustomGoRoute.fadeRoute(
+              path: RouteName.album,
+              builder: (context, state) => const AlbumView(),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            CustomGoRoute.fadeRoute(
+              path: RouteName.user,
+              builder: (context, state) => const Placeholder(),
+            ),
+          ]),
+        ],
+        builder: (context, state, navigationShell) => Scaffold(
+          body: navigationShell,
+          bottomNavigationBar: const BotNav(),
+        ),
+      ),
       CustomGoRoute.fadeRoute(
         path: RouteName.splash,
         builder: (context, state) => const SplashView(),
@@ -49,10 +90,6 @@ class CustomRouter {
       CustomGoRoute.slideRoute(
         path: RouteName.searchAddress,
         builder: (context, state) => const SearchAddressView(),
-      ),
-      CustomGoRoute.fadeRoute(
-        path: RouteName.home,
-        builder: (context, state) => const HomeView(),
       ),
       CustomGoRoute.slideRoute(
         path: RouteName.findEmail,
