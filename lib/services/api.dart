@@ -48,7 +48,8 @@ class API {
         return dio.patch(path,
             queryParameters: query, data: body, options: options);
       case HttpMethod.delete:
-        return dio.delete(path, queryParameters: query, options: options);
+        return dio.delete(path,
+            queryParameters: query, data: body, options: options);
     }
   }
 
