@@ -24,6 +24,11 @@ if (appleClientId == null) {
     throw GradleException("apple.client.id not found")
 }
 
+def appleScheme = localProperties.getProperty('apple.scheme')
+if (appleScheme == null) {
+    throw GradleException("apple.scheme not found")
+}
+
 def naverClientId = localProperties.getProperty('naver.client.id')
 if (naverClientId == null) {
     throw GradleException("naver.client.id not found")
@@ -60,8 +65,8 @@ android {
         manifestPlaceholders = [
             'applicationName': 'io.flutter.app.FlutterApplication',
             kakaoNativeKey: kakaoNativeKey,
-            appleClientId: appleClientId,
             appleScheme: appleScheme,
+            appleClientId: appleClientId,
             naverClientId: naverClientId,
             naverClientSecret: naverClientSecret,
         ]
