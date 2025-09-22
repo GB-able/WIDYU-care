@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:care/models/dtos/social_login_dto.dart';
 import 'package:care/models/enums/social_type.dart';
 import 'package:care/models/parent.dart';
@@ -36,6 +38,7 @@ class AuthService {
   Future<SocialLoginDto?> appleLogin(
       String authorizationCode, String? email, String? name) async {
     return _socialLogin(SocialType.apple, {
+      "platform": Platform.isIOS ? "ios" : "android",
       "authorizationCode": authorizationCode,
       "profile": {
         "email": email,
@@ -88,13 +91,19 @@ class AuthService {
       return null;
     }
 
-    final res = await api.req(
-      "$url/guardians/me",
-      method: HttpMethod.get,
-    );
-    if (res.statusCode == 200) {
-      return Profile.fromJson(res.data['data']);
+    try {
+      final res = await api.req(
+        "$url/guardians/me",
+        method: HttpMethod.get,
+      );
+      if (res.statusCode == 200) {
+        return Profile.fromJson(res.data['data']);
+      }
+    } catch (e) {
+      print("[PRINT] $e");
+      return null;
     }
+
     return null;
   }
 
