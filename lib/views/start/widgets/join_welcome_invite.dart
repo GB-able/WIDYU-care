@@ -23,7 +23,7 @@ class JoinWelcomeInvite extends StatelessWidget {
           AccountInfo(
             type: AccountInfoType.notice,
             name: userProvider.profile!.name,
-            phone: userProvider.profile!.phoneNumber ?? "",
+            phone: userProvider.profile!.phoneNumber!,
             email: userProvider.profile!.email,
           ),
         ],

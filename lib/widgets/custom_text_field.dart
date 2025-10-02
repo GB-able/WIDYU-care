@@ -136,6 +136,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               color: widget.enabled ? MyColor.grey900 : MyColor.grey300),
           cursorColor: MyColor.grey900,
           readOnly: !widget.enabled,
+          enableInteractiveSelection: widget.enabled,
         ),
       ],
     );

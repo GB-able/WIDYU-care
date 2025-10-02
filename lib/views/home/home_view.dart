@@ -31,10 +31,10 @@ class HomeView extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 child: AccountInfo(
                   type: AccountInfoType.notice,
-                  name: userProvider.profile?.name ?? "",
-                  phone: userProvider.profile?.phoneNumber ?? "",
-                  email: userProvider.profile?.email ?? "",
-                  socials: userProvider.profile?.providers ?? [],
+                  name: userProvider.profile!.name,
+                  phone: userProvider.profile!.phoneNumber!,
+                  email: userProvider.profile!.email,
+                  socials: userProvider.profile!.providers,
                 ),
               ),
               Row(
@@ -51,8 +51,11 @@ class HomeView extends StatelessWidget {
                     child: const Text("로그아웃"),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      AuthService().withdraw();
+                    onPressed: () async {
+                      await AuthService().withdraw();
+                      if (context.mounted) {
+                        context.go(RouteName.onboarding);
+                      }
                     },
                     child: const Text("회원탈퇴"),
                   ),

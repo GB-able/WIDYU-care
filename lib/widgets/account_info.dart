@@ -2,6 +2,7 @@ import 'package:care/models/enums/social_type.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/effects.dart';
 import 'package:care/styles/typos.dart';
+import 'package:care/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -30,7 +31,7 @@ class AccountInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final accountInfo = [
       {"title": "이름", "value": "$name 님"},
-      {"title": "연락처", "value": phone},
+      {"title": "연락처", "value": phone.toPhone()},
       if (socials != null) {"title": "소셜 연동", "value": socials},
       if (email != null) {"title": "위듀 이메일", "value": email}
     ];
@@ -102,7 +103,7 @@ class AccountInfo extends StatelessWidget {
                                   .color,
                             ),
                             child: SvgPicture.asset(
-                              "assets/icons/ic_20_social_$e.svg",
+                              "assets/icons/ic_20_social_${e.toLowerCase()}.svg",
                               width: 20,
                               height: 20,
                             ),

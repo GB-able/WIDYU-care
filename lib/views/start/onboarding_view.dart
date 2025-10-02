@@ -203,6 +203,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                                 }
                                 if (userProvider.profile!.hasParents) {
                                   context.push(RouteName.home);
+                                } else if (userProvider.profile!.phoneNumber ==
+                                    null) {
+                                  context.push(RouteName.join,
+                                      extra: JoinStatus.applePhone);
                                 } else {
                                   context.push(RouteName.join,
                                       extra: JoinStatus.welcomeInvite);

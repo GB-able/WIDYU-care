@@ -9,6 +9,7 @@ enum JoinStatus {
   emailPassword,
   identityVerification,
   welcomeInvite,
+  applePhone
 }
 
 class JoinViewModel with ChangeNotifier {
@@ -145,6 +146,10 @@ class JoinViewModel with ChangeNotifier {
       _isChecked = true;
     }
     notifyListeners();
+  }
+
+  Future<void> updateApplePhone() async {
+    await authService.updateApplePhone(emailCtrl.text);
   }
 
   void join(VoidCallback onSuccess, Function(String) onFailure) async {

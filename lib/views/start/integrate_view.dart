@@ -48,7 +48,7 @@ class IntegrateView extends StatelessWidget {
                   AccountInfo(
                     type: AccountInfoType.find,
                     name: profile.name,
-                    phone: profile.phoneNumber ?? "",
+                    phone: profile.phoneNumber!,
                     email: profile.providers.contains("local")
                         ? profile.email
                         : null,

@@ -26,7 +26,7 @@ class _SplashViewState extends State<SplashView> {
 
     final profile = userProvider.profile;
     if (mounted) {
-      if (profile == null) {
+      if (profile == null || profile.phoneNumber == null) {
         context.pushReplacement(RouteName.onboarding);
       } else if (!profile.hasParents) {
         context.pushReplacement(RouteName.join,

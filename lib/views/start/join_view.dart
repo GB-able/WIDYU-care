@@ -1,4 +1,5 @@
 import 'package:care/views/start/join_view_model.dart';
+import 'package:care/views/start/widgets/join_apple_phone.dart';
 import 'package:care/views/start/widgets/join_btns.dart';
 import 'package:care/views/start/widgets/join_welcome_invite.dart';
 import 'package:care/views/start/widgets/join_email_password.dart';
@@ -33,6 +34,7 @@ class JoinView extends StatelessWidget {
                         const JoinIdentityVerification(),
                       JoinStatus.emailPassword => const JoinEmailPassword(),
                       JoinStatus.welcomeInvite => const JoinWelcomeInvite(),
+                      JoinStatus.applePhone => const JoinApplePhone(),
                     },
                   ),
                 ),

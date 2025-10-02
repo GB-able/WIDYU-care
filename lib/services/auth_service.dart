@@ -220,4 +220,16 @@ class AuthService {
       return false;
     }
   }
+
+  Future<void> updateApplePhone(String email) async {
+    final res = await api.req(
+      "$url/guardians/apple/phone-number",
+      method: HttpMethod.patch,
+      tokenType: TokenType.temporary,
+      body: {"email": email},
+    );
+    if (res.statusCode != 200) {
+      throw Exception('Update apple phone failed');
+    }
+  }
 }

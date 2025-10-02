@@ -1,5 +1,3 @@
-import 'package:care/utils/extensions.dart';
-
 class Profile {
   final String name;
   final String? phoneNumber;
@@ -20,7 +18,7 @@ class Profile {
     return Profile(
       email: json['email'],
       name: json['name'],
-      phoneNumber: phone.toPhone(),
+      phoneNumber: phone,
       providers: json['providers'].cast<String>() ?? [],
       hasParents: json['hasParents'] ?? false,
     );
