@@ -33,9 +33,7 @@ class OnboardingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> socialLogin(
-      SocialType type,
-      Function(Profile profile, NewProfile newProfile) onJoined,
+  Future<void> socialLogin(SocialType type, Function(Profile profile) onJoined,
       VoidCallback onNotJoined) async {
     SocialLoginDto? result;
     switch (type) {
@@ -55,10 +53,12 @@ class OnboardingViewModel extends ChangeNotifier {
       return;
     }
 
-    if (result.newProfile == null) {
+    if (result.socialToken == null) {
       onNotJoined();
     } else {
-      onJoined(result.profile!, result.newProfile!);
+      await storage.write(
+          key: StorageKey.tempToken.name, value: result.socialToken!);
+      onJoined(result.profile!);
     }
   }
 

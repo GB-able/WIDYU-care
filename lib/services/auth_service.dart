@@ -133,17 +133,11 @@ class AuthService {
     }
   }
 
-  Future<void> integrate(NewProfile profile) async {
+  Future<void> integrate() async {
     final res = await api.req(
       "$url/guardians/social/integration",
       method: HttpMethod.post,
-      body: {
-        "name": profile.name,
-        "email": profile.email,
-        "phoneNumber": profile.phoneNumber,
-        "provider": profile.provider,
-        "oauthId": profile.oauthId,
-      },
+      tokenType: TokenType.temporary,
     );
     if (res.statusCode == 200) {
       return;

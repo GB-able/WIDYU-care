@@ -1,5 +1,5 @@
 import 'package:care/models/constants/route_name.dart';
-import 'package:care/models/dtos/social_login_dto.dart';
+import 'package:care/models/enums/social_type.dart';
 import 'package:care/models/profile.dart';
 import 'package:care/routes/custom_page.dart';
 import 'package:care/views/album/album_view.dart';
@@ -104,11 +104,8 @@ class CustomRouter {
         builder: (context, state) {
           final extra = state.extra! as Map<String, dynamic>;
           final profile = extra["profile"] as Profile;
-          final newProfile = extra["newProfile"] as NewProfile?;
-          return IntegrateView(
-            profile: profile,
-            newProfile: newProfile,
-          );
+          final provider = extra["provider"] as SocialType?;
+          return IntegrateView(profile: profile, provider: provider);
         },
       ),
     ],

@@ -5,14 +5,14 @@ class SocialLoginDto {
   final String? accessToken;
   final String? refreshToken;
   final Profile? profile;
-  final NewProfile? newProfile;
+  final String? socialToken;
 
   SocialLoginDto({
     required this.isFirst,
     required this.accessToken,
     required this.refreshToken,
     required this.profile,
-    required this.newProfile,
+    required this.socialToken,
   });
 
   factory SocialLoginDto.fromJson(Map<String, dynamic> json) {
@@ -22,18 +22,7 @@ class SocialLoginDto {
       refreshToken: json['refreshToken'],
       profile:
           json['profile'] != null ? Profile.fromJson(json['profile']) : null,
-      newProfile: json['newSocialAccountInfo'] != null
-          ? NewProfile(
-              oauthId: json['newSocialAccountInfo']['oauthId'],
-              provider: json['newSocialAccountInfo']['provider'],
-              name: json['newSocialAccountInfo']['name'],
-              email: json['newSocialAccountInfo']['email'],
-              phoneNumber: json['newSocialAccountInfo']['phoneNumber'] ??
-                      json['profile'] != null
-                  ? json['profile']['phoneNumber']
-                  : null,
-            )
-          : null,
+      socialToken: json['socialTemporaryToken'],
     );
   }
 }

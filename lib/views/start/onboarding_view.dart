@@ -137,11 +137,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                       SocialBtn(
                           type: SocialType.naver,
                           onTap: () async {
-                            viewModel.socialLogin(SocialType.naver,
-                                (profile, newProfile) {
+                            viewModel.socialLogin(SocialType.naver, (profile) {
                               context.push(RouteName.integrate, extra: {
                                 "profile": profile,
-                                "newProfile": newProfile,
+                                "provider": SocialType.naver,
                               });
                             }, () async {
                               await userProvider.init();
@@ -163,10 +162,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                           onTap: () async {
                             viewModel.socialLogin(
                               SocialType.kakao,
-                              (profile, newProfile) {
+                              (profile) {
                                 context.push(RouteName.integrate, extra: {
                                   "profile": profile,
-                                  "newProfile": newProfile,
+                                  "provider": SocialType.kakao,
                                 });
                               },
                               () async {
@@ -189,10 +188,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                           onTap: () async {
                             viewModel.socialLogin(
                               SocialType.apple,
-                              (profile, newProfile) {
+                              (profile) {
                                 context.push(RouteName.integrate, extra: {
                                   "profile": profile,
-                                  "newProfile": newProfile,
+                                  "provider": SocialType.apple,
                                 });
                               },
                               () async {

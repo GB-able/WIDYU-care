@@ -1,9 +1,9 @@
 import 'package:care/models/constants/route_name.dart';
-import 'package:care/models/dtos/social_login_dto.dart';
 import 'package:care/models/enums/social_type.dart';
 import 'package:care/models/profile.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
+import 'package:care/providers/user_provider.dart';
 import 'package:care/views/start/integrate_view_model.dart';
 import 'package:care/widgets/account_info.dart';
 import 'package:care/widgets/custom_app_bar.dart';
@@ -14,19 +14,19 @@ import 'package:provider/provider.dart';
 
 class IntegrateView extends StatelessWidget {
   const IntegrateView(
-      {super.key, required this.profile, required this.newProfile});
+      {super.key, required this.profile, required this.provider});
 
   final Profile profile;
-  final NewProfile? newProfile;
+  final SocialType? provider;
 
   @override
   Widget build(BuildContext context) {
-    final isLocalJoin = newProfile == null;
+    final isLocalJoin = provider == null;
 
     return ChangeNotifierProvider(
-      create: (_) => IntegrateViewModel(newProfile: newProfile),
-      child: Consumer<IntegrateViewModel>(
-        builder: (context, viewModel, _) => Scaffold(
+      create: (_) => IntegrateViewModel(),
+      child: Consumer2<IntegrateViewModel, UserProvider>(
+        builder: (context, viewModel, userProvider, _) => Scaffold(
           appBar: const CustomAppBar(),
           body: SingleChildScrollView(
             child: Padding(
@@ -39,9 +39,9 @@ class IntegrateView extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
-                        newProfile == null
+                        isLocalJoin
                             ? "회원가입을 계속 진행해서 연동할까요?"
-                            : "${SocialType.values.firstWhere((e) => e.name == newProfile!.provider.toLowerCase()).label} 계정도 연동할까요?",
+                            : "${provider!.label} 계정도 연동할까요?",
                         style: MyTypo.body2.copyWith(color: MyColor.grey600)),
                   ),
                   const SizedBox(height: 24),
@@ -87,6 +87,7 @@ class IntegrateView extends StatelessWidget {
                             context.pop();
                           } else {
                             await viewModel.integrate();
+                            await userProvider.init();
                             if (context.mounted) {
                               context.go(RouteName.home);
                             }

@@ -1,4 +1,5 @@
 import 'package:care/models/constants/route_name.dart';
+import 'package:care/models/enums/social_type.dart';
 import 'package:care/providers/user_provider.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
@@ -61,7 +62,7 @@ class JoinBtns extends StatelessWidget {
                           if (profile != null) {
                             context.push(RouteName.integrate, extra: {
                               "profile": profile,
-                              "newProfile": null,
+                              "provider": null,
                             });
                             viewModel.setJoinStatus(JoinStatus.emailPassword);
                           } else {
@@ -132,7 +133,7 @@ class JoinBtns extends StatelessWidget {
                       if (profile != null) {
                         context.push(RouteName.integrate, extra: {
                           "profile": profile,
-                          "newProfile": null,
+                          "provider": SocialType.apple,
                         });
                       } else {
                         await viewModel.updateApplePhone().then((_) {
