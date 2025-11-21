@@ -4,22 +4,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+enum CustomAppBarType {
+  small,
+  large,
+}
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar(
-      {super.key, this.title = "", this.canBack = true, this.onBack});
+  const CustomAppBar({
+    super.key,
+    this.title = "",
+    this.canBack = true,
+    this.onBack,
+    this.type = CustomAppBarType.small,
+    this.actions,
+  });
 
   final String title;
   final bool canBack;
   final VoidCallback? onBack;
+  final CustomAppBarType type;
+  final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: MyColor.white,
       automaticallyImplyLeading: false,
-      leadingWidth: 32,
+      leadingWidth: 38,
       leading: Padding(
-        padding: const EdgeInsets.only(left: 10),
+        padding: const EdgeInsets.only(left: 16),
         child: canBack
             ? GestureDetector(
                 onTap: () {
@@ -27,13 +40,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   context.pop();
                 },
                 child: SvgPicture.asset(
-                  "assets/icons/ic_22_chevron_left.svg",
+                  "assets/icons/ic_22_back.svg",
                   width: 22,
                   height: 22,
+                  colorFilter:
+                      const ColorFilter.mode(MyColor.grey600, BlendMode.srcIn),
                 ),
               )
             : const SizedBox.shrink(),
       ),
+      actions: actions,
+      actionsPadding: const EdgeInsets.only(right: 16),
       title: title.isNotEmpty
           ? Text(title, style: MyTypo.title3.copyWith(color: MyColor.grey800))
           : null,
@@ -43,5 +60,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(44.0);
+  Size get preferredSize =>
+      Size.fromHeight(type == CustomAppBarType.small ? 44 : 52);
 }
