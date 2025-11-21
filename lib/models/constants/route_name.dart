@@ -12,10 +12,16 @@ class RouteName {
   static const String findPassword = "/find-password";
 
   static const String home = "/home";
+
+  /* 목표 */
   static const String goal = "/goal";
+  static const String medicine = "/medicine";
+
   static const String location = "/location";
   static const String album = "/album";
   static const String user = "/user";
 
   static const String searchAddress = "/search-address";
+  static const String uploadPhoto = "/upload-photo";
+  static const String createPost = "/create-post";
 }

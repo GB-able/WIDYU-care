@@ -1,11 +1,15 @@
-import 'package:care/models/constants/route_name.dart';
+import 'package:care/models/enums/app_route.dart';
 import 'package:care/models/enums/social_type.dart';
 import 'package:care/models/profile.dart';
 import 'package:care/routes/custom_page.dart';
 import 'package:care/views/album/album_view.dart';
+import 'package:care/views/album/post_view.dart';
 import 'package:care/views/find/find_email_view.dart';
 import 'package:care/views/find/find_password_view.dart';
+import 'package:care/views/goal/goal_view.dart';
+import 'package:care/views/goal/medicine_view.dart';
 import 'package:care/views/home/home_view.dart';
+import 'package:care/views/photo/photo_view.dart';
 import 'package:care/views/start/integrate_view.dart';
 import 'package:care/views/start/join_view.dart';
 import 'package:care/views/start/join_view_model.dart';
@@ -18,16 +22,18 @@ import 'package:care/widgets/bot_nav.dart';
 import 'package:care/widgets/search_address_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class CustomRouter {
   static final router = GoRouter(
-    initialLocation: RouteName.splash,
+    initialLocation: AppRoute.splash.path,
     routes: [
       StatefulShellRoute.indexedStack(
         branches: [
           StatefulShellBranch(routes: [
             CustomGoRoute.fadeRoute(
-              path: RouteName.home,
+              path: AppRoute.home.path,
+              name: AppRoute.home.name,
               builder: (context, state) => const HomeView(), //const NavView(),
             ),
           ]),
@@ -39,68 +45,81 @@ class CustomRouter {
           ]),
           StatefulShellBranch(routes: [
             CustomGoRoute.fadeRoute(
-              path: RouteName.location,
+              path: AppRoute.location.path,
+              name: AppRoute.location.name,
               builder: (context, state) => const Placeholder(),
             ),
           ]),
           StatefulShellBranch(routes: [
             CustomGoRoute.fadeRoute(
-              path: RouteName.album,
+              path: AppRoute.album.path,
+              name: AppRoute.album.name,
               builder: (context, state) => const AlbumView(),
             ),
           ]),
           StatefulShellBranch(routes: [
             CustomGoRoute.fadeRoute(
-              path: RouteName.user,
+              path: AppRoute.user.path,
+              name: AppRoute.user.name,
               builder: (context, state) => const Placeholder(),
             ),
           ]),
         ],
-        builder: (context, state, navigationShell) => Scaffold(
-          body: navigationShell,
-          bottomNavigationBar: const BotNav(),
+        builder: (context, state, navigationShell) => Stack(
+          alignment: Alignment.bottomCenter,
+          children: [navigationShell, const BotNav()],
         ),
       ),
       CustomGoRoute.fadeRoute(
-        path: RouteName.splash,
+        path: AppRoute.splash.path,
+        name: AppRoute.splash.name,
         builder: (context, state) => const SplashView(),
       ),
       CustomGoRoute.fadeRoute(
-        path: RouteName.onboarding,
+        path: AppRoute.onboarding.path,
+        name: AppRoute.onboarding.name,
         builder: (context, state) => const OnboardingView(),
       ),
       CustomGoRoute.slideRoute(
-        path: RouteName.login,
+        path: AppRoute.login.path,
+        name: AppRoute.login.name,
         builder: (context, state) => const LoginView(),
       ),
       CustomGoRoute.slideRoute(
-        path: RouteName.join,
+        path: AppRoute.join.path,
+        name: AppRoute.join.name,
         builder: (context, state) => JoinView(
             initJoinStatus:
                 state.extra as JoinStatus? ?? JoinStatus.identityVerification),
       ),
       CustomGoRoute.slideRoute(
-        path: RouteName.registerParent,
+        path: AppRoute.registerParent.path,
+        name: AppRoute.registerParent.name,
         builder: (context, state) => const RegisterParentView(),
       ),
       CustomGoRoute.slideRoute(
-        path: RouteName.welcome,
+        path: AppRoute.welcome.path,
+        name: AppRoute.welcome.name,
         builder: (context, state) => const WelcomeView(),
       ),
       CustomGoRoute.slideRoute(
-        path: RouteName.searchAddress,
+        path: AppRoute.searchAddress.path,
+        name: AppRoute.searchAddress.name,
         builder: (context, state) => const SearchAddressView(),
       ),
       CustomGoRoute.slideRoute(
-        path: RouteName.findEmail,
+        path: AppRoute.findEmail.path,
+        name: AppRoute.findEmail.name,
         builder: (context, state) => const FindEmailView(),
       ),
       CustomGoRoute.slideRoute(
-        path: RouteName.findPassword,
+        path: AppRoute.findPassword.path,
+        name: AppRoute.findPassword.name,
         builder: (context, state) => const FindPasswordView(),
       ),
       CustomGoRoute.slideRoute(
-        path: RouteName.integrate,
+        path: AppRoute.integrate.path,
+        name: AppRoute.integrate.name,
         builder: (context, state) {
           final extra = state.extra! as Map<String, dynamic>;
           final profile = extra["profile"] as Profile;
