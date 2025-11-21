@@ -18,5 +18,13 @@ class MyTheme {
       toolbarHeight: 44,
       elevation: 0,
     ),
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
+      color: MyColor.white,
+    ),
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: MyColor.secondary,
+      selectionHandleColor: MyColor.secondary,
+      selectionColor: MyColor.secondary.withValues(alpha: 0.3),
+    ),
   );
 }
