@@ -9,10 +9,12 @@ extension CustomGoRoute on GoRoute {
     required Widget Function(BuildContext, GoRouterState) builder,
     String? name,
     Duration duration = duration,
+    List<RouteBase> routes = const [],
   }) {
     return GoRoute(
       path: path,
       name: name,
+      routes: routes,
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: builder(context, state),
@@ -35,10 +37,12 @@ extension CustomGoRoute on GoRoute {
     required Widget Function(BuildContext, GoRouterState) builder,
     String? name,
     Duration duration = duration,
+    List<RouteBase> routes = const [],
   }) {
     return GoRoute(
       path: path,
       name: name,
+      routes: routes,
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: builder(context, state),
