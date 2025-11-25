@@ -4,6 +4,8 @@ import 'package:care/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +18,7 @@ void main() async {
     nativeAppKey: dotenv.env['KAKAO_NATIVE_KEY'],
   );
 
-  runApp(const MyApp());
+  initializeDateFormatting('ko_KR', 'ko_KR').then((_) => runApp(const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
