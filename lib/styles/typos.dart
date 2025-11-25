@@ -39,4 +39,5 @@ class MyTypo {
 
   static final helper = mediumBase.copyWith(height: 1.5, fontSize: 12);
   static final helper2 = mediumBase.copyWith(height: 1.5, fontSize: 14);
+  static final helper3 = mediumBase.copyWith(height: 1.5, fontSize: 10);
 }
