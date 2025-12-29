@@ -109,7 +109,7 @@ class AuthService {
 
   Future<void> registerParent(List<Parent> parents) async {
     final res = await api.req(
-      "$url/parents/sign-up",
+      "$url/seniors/sign-up",
       method: HttpMethod.post,
       body: parents.map((e) => e.toJson()).toList(),
     );
@@ -140,7 +140,8 @@ class AuthService {
       tokenType: TokenType.temporary,
     );
     if (res.statusCode == 200) {
-      return;
+      final data = res.data['data'];
+      await api.setToken(data['accessToken'], data['refreshToken']);
     } else {
       throw Exception('Integrate failed');
     }
