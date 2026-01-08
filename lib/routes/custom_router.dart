@@ -2,8 +2,6 @@ import 'package:care/models/enums/app_route.dart';
 import 'package:care/models/enums/social_type.dart';
 import 'package:care/models/profile.dart';
 import 'package:care/routes/custom_page.dart';
-import 'package:care/views/album/album_view.dart';
-import 'package:care/views/album/post_view.dart';
 import 'package:care/views/find/find_email_view.dart';
 import 'package:care/views/find/find_password_view.dart';
 import 'package:care/views/goal/goal_view.dart';
@@ -11,7 +9,6 @@ import 'package:care/views/goal/medicine_view.dart';
 import 'package:care/views/goal/walk_edit_view.dart';
 import 'package:care/views/goal/walk_view.dart';
 import 'package:care/views/home/home_view.dart';
-import 'package:care/views/photo/photo_view.dart';
 import 'package:care/views/start/integrate_view.dart';
 import 'package:care/views/start/join_view.dart';
 import 'package:care/views/start/join_view_model.dart';
@@ -24,7 +21,6 @@ import 'package:care/widgets/bot_nav.dart';
 import 'package:care/widgets/search_address_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
 
 class CustomRouter {
   static final router = GoRouter(
@@ -64,13 +60,6 @@ class CustomRouter {
               path: AppRoute.location.path,
               name: AppRoute.location.name,
               builder: (context, state) => const Placeholder(),
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            CustomGoRoute.fadeRoute(
-              path: AppRoute.album.path,
-              name: AppRoute.album.name,
-              builder: (context, state) => const AlbumView(),
             ),
           ]),
           StatefulShellBranch(routes: [
@@ -144,13 +133,10 @@ class CustomRouter {
         },
       ),
       CustomGoRoute.closeRoute(
-        path: AppRoute.uploadPhoto.path,
-        name: AppRoute.uploadPhoto.name,
-        builder: (context, state) => const PhotoView(),
+        path: AppRoute.walkEdit.path,
+        name: AppRoute.walkEdit.name,
+        builder: (context, state) => const WalkEditView(),
       ),
-      CustomGoRoute.slideRoute(
-        path: AppRoute.createPost.path,
-        name: AppRoute.createPost.name,
     ],
   );
 }

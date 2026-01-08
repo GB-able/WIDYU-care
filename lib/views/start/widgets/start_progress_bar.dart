@@ -15,7 +15,7 @@ class StartProgressBar extends StatelessWidget {
         totalSteps: 3,
         currentStep: userProvider.joinStep,
         padding: const EdgeInsets.fromLTRB(34, 6, 34, 0),
-        stepNodeSize: 23,
+        stepSize: 23,
         nodeTitles: const ["케어러 정보", "부모님 정보", "완료"],
         nodeIconBuilder: (index, completedStepIndex) {
           if (index < completedStepIndex) {

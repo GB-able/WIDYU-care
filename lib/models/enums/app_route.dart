@@ -16,6 +16,7 @@ enum AppRoute {
   /* 목표 */
   goal('/goal'),
   walk('walk'),
+  medicine('medicine'),
   walkEdit('/walk-edit'),
 
   location('/location'),
