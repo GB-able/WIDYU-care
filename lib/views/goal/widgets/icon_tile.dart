@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 enum IconTileType { pill, walk, hospital }
 
 class IconTile extends StatelessWidget {
-  const IconTile({super.key, required this.type});
+  const IconTile({super.key, required this.type, this.isFailed = false});
 
   final IconTileType type;
+  final bool isFailed;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class IconTile extends StatelessWidget {
       ),
       child: ClipOval(
         child: Image.asset(
-          "assets/images/img_40_${type.name}.png",
+          "assets/images/img_40_${type.name}${isFailed ? "_disabled" : ""}.png",
           fit: BoxFit.cover,
         ),
       ),

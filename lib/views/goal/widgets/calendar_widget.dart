@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:care/models/constants/calendar_config.dart';
 import 'package:care/styles/colors.dart';
 import 'package:care/styles/typos.dart';
@@ -11,23 +9,27 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarWidget extends StatelessWidget {
-  const CalendarWidget({
-    super.key,
-    required this.type,
-    required this.focusedDay,
-    required this.selectedDay,
-    required this.onSelectedDay,
-  });
+  const CalendarWidget(
+      {super.key,
+      required this.type,
+      required this.focusedDay,
+      required this.selectedDay,
+      required this.onSelectedDay,
+      required this.percentData});
 
   final CalendarFormat type;
   final DateTime focusedDay;
   final DateTime selectedDay;
   final Function(DateTime) onSelectedDay;
+  final Map<DateTime, double> percentData;
 
   @override
   Widget build(BuildContext context) {
-    final today = DateTime.now();
-    final double percent = Random().nextDouble();
+    final today = CalendarConfig.today;
+    double percentFor(DateTime date) {
+      final key = DateTime(date.year, date.month, date.day);
+      return percentData[key] ?? 0;
+    }
 
     if (type == CalendarFormat.week) {
       return TableCalendar(
@@ -41,67 +43,73 @@ class CalendarWidget extends StatelessWidget {
         daysOfWeekVisible: false,
         startingDayOfWeek: StartingDayOfWeek.sunday,
         calendarBuilders: CalendarBuilders(
-          prioritizedBuilder: (context, date, events) => Container(
-            width: 44,
-            decoration: BoxDecoration(
-              color: date.isSameDay(selectedDay)
-                  ? MyColor.grey700
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(999),
-            ),
-            padding: const EdgeInsets.only(top: 5, bottom: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(DateFormat('E', 'ko_KR').format(date),
-                    style: date.isSameDay(selectedDay)
-                        ? MyTypo.subTitle2.copyWith(color: MyColor.white)
-                        : MyTypo.body2.copyWith(color: MyColor.grey700)),
-                Container(
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    color: date.isSameDay(today) && !date.isSameDay(selectedDay)
-                        ? MyColor.orange200
-                        : Colors.transparent,
-                    shape: BoxShape.circle,
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(date.day.toString(),
+          prioritizedBuilder: (context, date, events) {
+            final value = percentFor(date);
+            final isFuture = date.isAfter(today);
+            final progress = isFuture ? 0.0 : value;
+            final isCompleted = !isFuture && progress >= 1;
+            return Container(
+              width: 44,
+              decoration: BoxDecoration(
+                color: date.isSameDay(selectedDay)
+                    ? MyColor.grey700
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              padding: const EdgeInsets.only(top: 5, bottom: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(DateFormat('E', 'ko_KR').format(date),
                       style: date.isSameDay(selectedDay)
                           ? MyTypo.subTitle2.copyWith(color: MyColor.white)
                           : MyTypo.body2.copyWith(color: MyColor.grey700)),
-                ),
-                percent == 1
-                    ? Container(
-                        width: 22,
-                        height: 22,
-                        decoration: const BoxDecoration(
-                          color: MyColor.primary,
-                          shape: BoxShape.circle,
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color:
+                          date.isSameDay(today) && !date.isSameDay(selectedDay)
+                              ? MyColor.orange200
+                              : Colors.transparent,
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(date.day.toString(),
+                        style: date.isSameDay(selectedDay)
+                            ? MyTypo.subTitle2.copyWith(color: MyColor.white)
+                            : MyTypo.body2.copyWith(color: MyColor.grey700)),
+                  ),
+                  isCompleted
+                      ? Container(
+                          width: 22,
+                          height: 22,
+                          decoration: const BoxDecoration(
+                            color: MyColor.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          alignment: Alignment.center,
+                          child: const IconWidget(
+                            icon: "check",
+                            width: 16,
+                            height: 16,
+                            color: MyColor.orange50,
+                          ),
+                        )
+                      : CircularPercentIndicator(
+                          radius: 11,
+                          animation: true,
+                          percent: progress,
+                          progressColor: MyColor.primary,
+                          backgroundColor:
+                              isFuture ? MyColor.grey100 : MyColor.primaryLight,
+                          lineWidth: 4,
+                          circularStrokeCap: CircularStrokeCap.round,
                         ),
-                        alignment: Alignment.center,
-                        child: const IconWidget(
-                          icon: "check",
-                          width: 16,
-                          height: 16,
-                          color: MyColor.orange50,
-                        ),
-                      )
-                    : CircularPercentIndicator(
-                        radius: 11,
-                        animation: true,
-                        percent: date.isAfter(today) ? 0 : percent,
-                        progressColor: MyColor.primary,
-                        backgroundColor: date.isAfter(today)
-                            ? MyColor.grey100
-                            : MyColor.primaryLight,
-                        lineWidth: 4,
-                        circularStrokeCap: CircularStrokeCap.round,
-                      ),
-              ],
-            ),
-          ),
+                ],
+              ),
+            );
+          },
         ),
       );
     } else {
@@ -125,74 +133,83 @@ class CalendarWidget extends StatelessWidget {
           calendarStyle: const CalendarStyle(
             outsideDaysVisible: false,
           ),
+          onPageChanged: (date) {},
           headerVisible: false,
           availableGestures: AvailableGestures.none,
           startingDayOfWeek: StartingDayOfWeek.sunday,
           calendarBuilders: CalendarBuilders(
-            prioritizedBuilder: (context, date, events) => GestureDetector(
-              onTap: () {
-                onSelectedDay(date);
-              },
-              child: Container(
-                width: 44,
-                decoration: BoxDecoration(
-                  color: date.isSameDay(selectedDay)
-                      ? MyColor.grey700
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                padding: const EdgeInsets.only(top: 2, bottom: 10),
-                margin: const EdgeInsets.only(top: 8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: date.isSameDay(today) &&
-                                !date.isSameDay(selectedDay)
-                            ? MyColor.orange200
-                            : Colors.transparent,
-                        shape: BoxShape.circle,
+            prioritizedBuilder: (context, date, events) {
+              final value = percentFor(date);
+              final isFuture = date.isAfter(today);
+              final progress = isFuture ? 0.0 : value;
+              final isCompleted = !isFuture && progress >= 1;
+              return GestureDetector(
+                onTap: () {
+                  onSelectedDay(date);
+                },
+                child: Container(
+                  width: 44,
+                  decoration: BoxDecoration(
+                    color: date.isSameDay(selectedDay)
+                        ? MyColor.grey700
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  padding: const EdgeInsets.only(top: 2, bottom: 10),
+                  margin: const EdgeInsets.only(top: 8),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: date.isSameDay(today) &&
+                                  !date.isSameDay(selectedDay)
+                              ? MyColor.orange200
+                              : Colors.transparent,
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(date.day.toString(),
+                            style: date.isSameDay(selectedDay)
+                                ? MyTypo.subTitle2
+                                    .copyWith(color: MyColor.white)
+                                : MyTypo.body2
+                                    .copyWith(color: MyColor.grey700)),
                       ),
-                      alignment: Alignment.center,
-                      child: Text(date.day.toString(),
-                          style: date.isSameDay(selectedDay)
-                              ? MyTypo.subTitle2.copyWith(color: MyColor.white)
-                              : MyTypo.body2.copyWith(color: MyColor.grey700)),
-                    ),
-                    percent == 1
-                        ? Container(
-                            width: 22,
-                            height: 22,
-                            decoration: const BoxDecoration(
-                              color: MyColor.primary,
-                              shape: BoxShape.circle,
+                      isCompleted
+                          ? Container(
+                              width: 22,
+                              height: 22,
+                              decoration: const BoxDecoration(
+                                color: MyColor.primary,
+                                shape: BoxShape.circle,
+                              ),
+                              alignment: Alignment.center,
+                              child: const IconWidget(
+                                icon: "check",
+                                width: 16,
+                                height: 16,
+                                color: MyColor.orange50,
+                              ),
+                            )
+                          : CircularPercentIndicator(
+                              radius: 11,
+                              animation: true,
+                              percent: progress,
+                              progressColor: MyColor.primary,
+                              backgroundColor: isFuture
+                                  ? MyColor.grey100
+                                  : MyColor.primaryLight,
+                              lineWidth: 4,
+                              circularStrokeCap: CircularStrokeCap.round,
                             ),
-                            alignment: Alignment.center,
-                            child: const IconWidget(
-                              icon: "check",
-                              width: 16,
-                              height: 16,
-                              color: MyColor.orange50,
-                            ),
-                          )
-                        : CircularPercentIndicator(
-                            radius: 11,
-                            animation: true,
-                            percent: date.isAfter(today) ? 0 : percent,
-                            progressColor: MyColor.primary,
-                            backgroundColor: date.isAfter(today)
-                                ? MyColor.grey100
-                                : MyColor.primaryLight,
-                            lineWidth: 4,
-                            circularStrokeCap: CircularStrokeCap.round,
-                          ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       );

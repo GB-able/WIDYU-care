@@ -8,6 +8,8 @@ import 'package:care/views/find/find_email_view.dart';
 import 'package:care/views/find/find_password_view.dart';
 import 'package:care/views/goal/goal_view.dart';
 import 'package:care/views/goal/medicine_view.dart';
+import 'package:care/views/goal/walk_edit_view.dart';
+import 'package:care/views/goal/walk_view.dart';
 import 'package:care/views/home/home_view.dart';
 import 'package:care/views/photo/photo_view.dart';
 import 'package:care/views/start/integrate_view.dart';
