@@ -41,8 +41,22 @@ class CustomRouter {
           ]),
           StatefulShellBranch(routes: [
             CustomGoRoute.fadeRoute(
-              path: RouteName.goal,
-              builder: (context, state) => const Placeholder(),
+              path: AppRoute.goal.path,
+              name: AppRoute.goal.name,
+              builder: (context, state) => const GoalView(),
+              routes: [
+                CustomGoRoute.slideRoute(
+                  path: AppRoute.medicine.path,
+                  name: AppRoute.medicine.name,
+                  builder: (context, state) => const MedicineView(),
+                ),
+                CustomGoRoute.slideRoute(
+                  path: AppRoute.walk.path,
+                  name: AppRoute.walk.name,
+                  builder: (context, state) => const WalkView(),
+                  routes: [],
+                ),
+              ],
             ),
           ]),
           StatefulShellBranch(routes: [
@@ -129,6 +143,14 @@ class CustomRouter {
           return IntegrateView(profile: profile, provider: provider);
         },
       ),
+      CustomGoRoute.closeRoute(
+        path: AppRoute.uploadPhoto.path,
+        name: AppRoute.uploadPhoto.name,
+        builder: (context, state) => const PhotoView(),
+      ),
+      CustomGoRoute.slideRoute(
+        path: AppRoute.createPost.path,
+        name: AppRoute.createPost.name,
     ],
   );
 }
